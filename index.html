@@ -165,6 +165,7 @@
 </div>
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <script>
   const chatBox = document.getElementById('chatBox');
@@ -204,9 +205,8 @@
   }
 
   // ข้อความตอบแบบธรรมดา
-  socket.on("response", (msg) => {
-      appendMessage(msg, 'bot');
-      status.textContent = '';
+  socket.on("response_done", (data) => {
+    currentBotDiv.innerHTML = data.html;
   });
 
   // เริ่ม stream
