@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Chatbot ช่วยสืบค้นหาร่างคำฟ้อง</title>
   <style>
     * {
@@ -114,7 +115,7 @@
       background: #45a049;
     }
 
-    /* ✅ Responsive layout for mobile */
+    /* Responsive layout for mobile */
     @media (max-width: 768px) {
       #mainContainer {
         flex-direction: column;
@@ -132,13 +133,13 @@
       }
     }
     footer {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #666;
-  text-align: center;
-  border-top: 1px solid #eee;
-  padding-top: 15px;
-}
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -151,35 +152,40 @@
     <div id="chatBox"></div>
     <div id="status"></div>
     <div id="inputContainer">
-      
       <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />
       <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
     </div>
     <footer>
-  <a href="https://www3.ago.go.th/center/lawaid/" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
-  🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
-  พัฒนาโดย <strong>SuperAnawat</strong> ทีม <strong>ICT4</strong>
-  </footer>
-
+      <a href="https://www3.ago.go.th/center/lawaid/" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
+      🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
+      พัฒนาโดย <strong>SuperAnawat</strong> ทีม <strong>ICT4</strong>
+    </footer>
   </div>
 </div>
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+<script src="./config.js"></script>
+
 <script>
   const chatBox = document.getElementById('chatBox');
   const status = document.getElementById('status');
 
-  // URL ngrok ของ Flask
-  const socket = io("https://a32f-182-52-236-56.ngrok-free.app", {
+  // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
+  const socket = io(CONFIG.API_URL, {
       transports: ["websocket", "polling"]
   });
 
   let currentBotDiv = null;
 
   socket.on("connect", () => {
-      console.log("Connected:", socket.id);
+      console.log("Connected to Backend successfully:", socket.id);
+  });
+
+  socket.on("connect_error", (error) => {
+      console.error("Connection Error:", error);
+      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบ URL';
   });
 
   socket.on("disconnect", () => {
@@ -193,64 +199,52 @@
       if (!message) return;
 
       appendMessage(message, 'user');
-
       input.value = '';
-
       status.textContent = 'กำลังคิด...';
-
       currentBotDiv = null;
 
       // ส่งข้อความไป Flask SocketIO
       socket.emit("peopleChat", message);
   }
 
-  // ข้อความตอบแบบธรรมดา
-  socket.on("response_done", (data) => {
-    currentBotDiv.innerHTML = data.html;
-  });
-
-  // เริ่ม stream
+  // เริ่ม stream (AI กำลังเริ่มพิมพ์)
   socket.on("response_start", () => {
       currentBotDiv = document.createElement('div');
       currentBotDiv.className = 'message bot';
       currentBotDiv.innerHTML = '';
       chatBox.appendChild(currentBotDiv);
-
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
-  // รับข้อความทีละ chunk
+  // รับข้อความทีละ chunk (Streaming)
   socket.on("response_stream", (data) => {
       if (!currentBotDiv) {
           currentBotDiv = document.createElement('div');
           currentBotDiv.className = 'message bot';
           chatBox.appendChild(currentBotDiv);
       }
-
       currentBotDiv.innerHTML += data.text;
-
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
-  // จบ stream
+  // จบ stream (ประมวลผลข้อความสุดท้ายให้สมบูรณ์ เช่น จัด Format หรือแปลง Markdown)
   socket.on("response_done", (data) => {
       if (currentBotDiv) {
           currentBotDiv.innerHTML = data.html;
       }
-
       status.textContent = '';
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
-  // error
+  // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
-      appendMessage("เกิดข้อผิดพลาด", "bot");
+      appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
       status.textContent = '';
   });
 
+  // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
   function appendMessage(text, sender) {
       const div = document.createElement('div');
-
       div.className = 'message ' + sender;
 
       if (sender === 'bot') {
@@ -260,10 +254,10 @@
       }
 
       chatBox.appendChild(div);
-
       chatBox.scrollTop = chatBox.scrollHeight;
   }
 
+  // กด Enter เพื่อส่งข้อความ
   document.getElementById('userInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
           sendMessage();
@@ -273,6 +267,3 @@
 
 </body>
 </html>
-
-
-
