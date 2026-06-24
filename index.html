@@ -244,14 +244,14 @@
       if (currentBotDiv) {
           currentBotDiv.innerHTML = data.html;
       }
-      status.textContent = '';
+      status.innerHTML = '';
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
   // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
       appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
-      status.textContent = '';
+      status.innerHTML = '';
   });
 
   // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
