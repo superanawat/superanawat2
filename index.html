@@ -51,53 +51,6 @@
       color: #333;
     }
 
-    /* ===== API URL BAR ===== */
-    #apiBar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      padding: 8px 12px;
-      background: #f8f8f8;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 13px;
-    }
-
-    #apiStatusDot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #ccc;
-      flex-shrink: 0;
-    }
-
-    #apiStatusDot.connected { background: #4caf50; }
-    #apiStatusDot.disconnected { background: #f44336; }
-    #apiStatusDot.not-set { background: #ccc; }
-
-    #apiStatusText {
-      flex: 1;
-      color: #555;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    #setUrlBtn {
-      padding: 4px 10px;
-      font-size: 12px;
-      border: 1px solid #bbb;
-      border-radius: 6px;
-      background: white;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    #setUrlBtn:hover { background: #f0f0f0; }
-
-    /* ===== CHAT BOX ===== */
     #chatBox {
       height: 400px;
       overflow-y: auto;
@@ -128,43 +81,27 @@
       float: left;
     }
 
-    /* Citation superscript */
-    .bot sup.citation {
-      color: #1a73e8;
-      font-size: 0.75em;
-      cursor: default;
-    }
-
     #status {
       font-style: italic;
       color: gray;
       margin: 5px 0;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      height: 20px;
     }
 
-    /* ===== INPUT ===== */
     #inputContainer {
       display: flex;
       gap: 10px;
     }
 
-    #userInput {
-      flex: 1;
-      min-height: 44px;
-      max-height: 120px;
-      resize: none;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    #userInput:disabled {
-      background: #f5f5f5;
-      cursor: not-allowed;
+    #userInput{
+      flex:1;
+      min-height:44px;
+      max-height:120px;
+      resize:none;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      font-size:16px;
     }
 
     #sendBtn {
@@ -175,44 +112,13 @@
       background: #4caf50;
       color: white;
       cursor: pointer;
-      flex-shrink: 0;
     }
 
-    #sendBtn:hover:not(:disabled) { background: #45a049; }
-
-    #sendBtn:disabled {
-      background: #aaa;
-      cursor: not-allowed;
+    #sendBtn:hover {
+      background: #45a049;
     }
 
-    /* ===== SPINNER ===== */
-    .loading-spinner {
-      width: 18px;
-      height: 18px;
-      border: 3px solid #ddd;
-      border-top: 3px solid #4caf50;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: inline-block;
-      flex-shrink: 0;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    /* ===== FOOTER ===== */
-    footer {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
-      text-align: center;
-      border-top: 1px solid #eee;
-      padding-top: 15px;
-    }
-
-    /* ===== RESPONSIVE ===== */
+    /* Responsive layout for mobile */
     @media (max-width: 768px) {
       #mainContainer {
         flex-direction: column;
@@ -225,17 +131,50 @@
         align-self: center;
       }
 
-      #chatBox { height: 300px; }
-
-      #inputContainer {
-        position: sticky;
-        bottom: 0;
-        background: white;
-        padding: 10px;
-        z-index: 999;
+      #chatBox {
+        height: 300px;
       }
 
-      #userInput { font-size: 16px; }
+        /* 🔥 เพิ่มส่วนนี้ */
+  #inputContainer{
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px;
+    z-index: 999;
+  }
+
+  #userInput{
+    font-size: 16px;
+  }
+
+      
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+     .loading-spinner {
+      width: 24px;
+      height: 24px;
+      border: 4px solid #ddd;
+      border-top: 4px solid #4caf50;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
@@ -244,224 +183,131 @@
 <div id="mainContainer">
   <img id="robotImage" src="./ict4.gif" alt="ICT4 Animation">
 
-  <div id="chatContainer">
+  <div id="chatContainer">    
     <h2>💬 AI Chatbot ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ</h2>
-
-    <!-- API URL Management Bar -->
-    <div id="apiBar">
-      <div id="apiStatusDot" class="not-set"></div>
-      <span id="apiStatusText">ยังไม่ได้ตั้ง API URL</span>
-      <button id="setUrlBtn" onclick="promptSetApiUrl()">⚙️ ตั้ง URL</button>
-    </div>
-
     <div id="chatBox"></div>
     <div id="status"></div>
-
     <div id="inputContainer">
-      <textarea id="userInput" placeholder="พิมพ์คำถามของคุณ..." rows="2" disabled></textarea>
-      <button id="sendBtn" onclick="sendMessage()" disabled>ส่ง</button>
+      <!--<input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />-->
+      <textarea id="userInput" placeholder="พิมพ์คำถามของคุณ..." rows="2"></textarea>
+      <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
     </div>
-
     <footer>
-      <a href="https://infocenter.oic.go.th/สำนักงานอัยการสูงสุด/topic.php?gid=15124&mid=1017"
-         target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
-      &nbsp;🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
+      <a href="https://infocenter.oic.go.th/สำนักงานอัยการสูงสุด/topic.php?gid=15124&mid=1017" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
+      🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
       พัฒนาโดย ทีม <strong>ICT4</strong>
     </footer>
   </div>
 </div>
 
-<!-- Socket.IO & Marked -->
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <script src="./config.js"></script>
 
 <script>
-  // ===== ELEMENTS =====
-  const chatBox       = document.getElementById('chatBox');
-  const statusEl      = document.getElementById('status');
-  const userInput     = document.getElementById('userInput');
-  const sendBtn       = document.getElementById('sendBtn');
-  const apiStatusDot  = document.getElementById('apiStatusDot');
-  const apiStatusText = document.getElementById('apiStatusText');
+  const chatBox = document.getElementById('chatBox');
+  const status = document.getElementById('status');
 
-  let socket = null;
+  // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
+  const socket = io(CONFIG.API_URL, {
+      transports: ["websocket", "polling"]
+  });
+
   let currentBotDiv = null;
-  let isWaiting = false;   // ป้องกันส่งซ้ำขณะ AI กำลังตอบ
 
-  // ===== API URL MANAGEMENT =====
-  function promptSetApiUrl() {
-    const current = CONFIG.API_URL;
-    const input = prompt(
-      "ใส่ ngrok URL ใหม่\n(เช่น https://xxxx.ngrok-free.app)\n\nกด OK แล้วหน้าจะ reload อัตโนมัติ",
-      current
-    );
+  socket.on("connect", () => {
+      console.log("Connected to Backend successfully:", socket.id);
+  });
 
-    if (input === null) return;  // กด Cancel
+  socket.on("connect_error", (error) => {
+      console.error("Connection Error:", error);
+      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
+  });
 
-    const url = input.trim().replace(/\/$/, "");  // ตัด trailing slash
-    if (!url.startsWith("https://")) {
-      alert("❌ URL ไม่ถูกต้อง ต้องขึ้นต้นด้วย https://");
-      return;
-    }
-
-    localStorage.setItem("sarabot_api_url", url);
-    location.reload();
-  }
-
-  function updateApiBar(state, text) {
-    // state: "not-set" | "connecting" | "connected" | "disconnected"
-    apiStatusDot.className = "";
-    apiStatusDot.classList.add(state === "connected" ? "connected"
-                              : state === "disconnected" ? "disconnected"
-                              : "not-set");
-    apiStatusText.textContent = text;
-  }
-
-  // ===== SOCKET INIT =====
-  function initSocket() {
-    const url = CONFIG.API_URL;
-
-    if (!url) {
-      updateApiBar("not-set", "ยังไม่ได้ตั้ง API URL — กด ⚙️ ตั้ง URL");
-      return;
-    }
-
-    updateApiBar("not-set", `กำลังเชื่อมต่อ ${url} ...`);
-
-    socket = io(url, CONFIG.SOCKET_OPTIONS);
-
-    socket.on("connect", () => {
-      console.log("✅ Connected:", socket.id);
-      updateApiBar("connected", url);
-      setInputEnabled(true);
-      appendMessage("สวัสดีครับ 👋 ผมคือ SaraBOT ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ พิมพ์คำถามได้เลยครับ", "bot");
-    });
-
-    socket.on("connect_error", (err) => {
-      console.error("❌ Connection Error:", err);
-      updateApiBar("disconnected", `เชื่อมต่อไม่ได้ — ${url}`);
-      setInputEnabled(false);
-      statusEl.innerHTML = '⚠️ เชื่อมต่อ server ไม่ได้ กรุณาตรวจสอบ URL หรือ ngrok';
-    });
-
-    socket.on("disconnect", () => {
+  socket.on("disconnect", () => {
       console.log("Disconnected");
-      updateApiBar("disconnected", `หลุดการเชื่อมต่อ — ${url}`);
-      setInputEnabled(false);
-      statusEl.textContent = "การเชื่อมต่อหลุด กำลังลองใหม่...";
-    });
+  });
 
-    socket.on("reconnect", () => {
-      updateApiBar("connected", url);
-      setInputEnabled(true);
-      statusEl.textContent = "";
-    });
+  function sendMessage() {
+      const input = document.getElementById('userInput');
+      const message = input.value.trim();
 
-    // ===== RESPONSE EVENTS =====
+      if (!message) return;
 
-    // AI เริ่มตอบ — สร้างกล่องข้อความใหม่รอไว้
-    socket.on("response_start", () => {
+      appendMessage(message, 'user');
+      input.value = '';
+      status.innerHTML = '<span class="loading-spinner"></span>';
+      currentBotDiv = null;
+
+      // ส่งข้อความไป Flask SocketIO
+      socket.emit("peopleChat", message);
+  }
+
+  // เริ่ม stream (AI กำลังเริ่มพิมพ์)
+  socket.on("response_start", () => {
       currentBotDiv = document.createElement('div');
       currentBotDiv.className = 'message bot';
       currentBotDiv.innerHTML = '';
       chatBox.appendChild(currentBotDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
-    });
+  });
 
-    // รับข้อความทีละ chunk (streaming)
-    socket.on("response_stream", (data) => {
+  // รับข้อความทีละ chunk (Streaming)
+  socket.on("response_stream", (data) => {
       if (!currentBotDiv) {
-        currentBotDiv = document.createElement('div');
-        currentBotDiv.className = 'message bot';
-        chatBox.appendChild(currentBotDiv);
+          currentBotDiv = document.createElement('div');
+          currentBotDiv.className = 'message bot';
+          chatBox.appendChild(currentBotDiv);
       }
       currentBotDiv.innerHTML += data.text;
       chatBox.scrollTop = chatBox.scrollHeight;
-    });
-
-    // จบ stream — แทนด้วย HTML สมบูรณ์จาก server
-    socket.on("response_done", (data) => {
-      if (currentBotDiv) {
-        currentBotDiv.innerHTML = data.html;
-      }
-      statusEl.innerHTML = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
-      setWaiting(false);
-    });
-
-    // Error จาก server
-    socket.on("response_error", (data) => {
-      if (currentBotDiv) {
-        currentBotDiv.innerHTML = data.html || "⚠️ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง";
-      } else {
-        appendMessage("⚠️ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "bot");
-      }
-      statusEl.innerHTML = '';
-      setWaiting(false);
-    });
-  }
-
-  // ===== SEND MESSAGE =====
-  function sendMessage() {
-    if (!socket || !socket.connected) {
-      alert("ยังไม่ได้เชื่อมต่อ server กรุณาตั้ง URL ก่อน");
-      return;
-    }
-
-    if (isWaiting) return;
-
-    const message = userInput.value.trim();
-    if (!message) return;
-
-    appendMessage(message, 'user');
-    userInput.value = '';
-    statusEl.innerHTML = '<span class="loading-spinner"></span> <span>กำลังประมวลผล...</span>';
-    currentBotDiv = null;
-    setWaiting(true);
-
-    socket.emit("peopleChat", message);
-  }
-
-  // ===== HELPERS =====
-  function appendMessage(text, sender) {
-    const div = document.createElement('div');
-    div.className = 'message ' + sender;
-    div.innerHTML = sender === 'bot' ? text : escapeHtml(text);
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  function escapeHtml(text) {
-    return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  function setWaiting(waiting) {
-    isWaiting = waiting;
-    sendBtn.disabled = waiting;
-    userInput.disabled = waiting;
-  }
-
-  function setInputEnabled(enabled) {
-    userInput.disabled = !enabled;
-    sendBtn.disabled = !enabled;
-    if (enabled) userInput.focus();
-  }
-
-  // ===== KEYBOARD =====
-  userInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
   });
 
-  // ===== INIT =====
-  initSocket();
+  // จบ stream (ประมวลผลข้อความสุดท้ายให้สมบูรณ์ เช่น จัด Format หรือแปลง Markdown)
+  socket.on("response_done", (data) => {
+      if (currentBotDiv) {
+          currentBotDiv.innerHTML = data.html;
+      }
+      status.innerHTML = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
+  socket.on("response_error", (data) => {
+      appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
+      status.innerHTML = '';
+  });
+
+  // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
+  function appendMessage(text, sender) {
+      const div = document.createElement('div');
+      div.className = 'message ' + sender;
+
+      if (sender === 'bot') {
+          div.innerHTML = text;
+      } else {
+          div.textContent = text;
+      }
+
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // กด Enter เพื่อส่งข้อความ
+ // document.getElementById('userInput').addEventListener('keypress', function(e) {
+ //     if (e.key === 'Enter') {
+  //        sendMessage();
+  //    }
+ // });
+  document.getElementById('userInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+  
 </script>
 
 </body>
