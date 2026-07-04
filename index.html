@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chatbot ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ</title>
+  <title>AI Chatbot ให้คำปรึกษาการร่างคำฟ้อง</title>
   <style>
     * {
       box-sizing: border-box;
@@ -184,7 +184,7 @@
   <img id="robotImage" src="./ict4.gif" alt="ICT4 Animation">
 
   <div id="chatContainer">    
-    <h2>💬 AI Chatbot ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ</h2>
+    <h2>💬 AI ChatBot ให้คำปรึกษาการร่างคำฟ้อง</h2>
     <div id="chatBox"></div>
     <div id="status"></div>
     <div id="inputContainer">
@@ -195,7 +195,7 @@
     <footer>
       <a href="https://infocenter.oic.go.th/สำนักงานอัยการสูงสุด/topic.php?gid=15124&mid=1017" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
       🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
-      พัฒนาโดย ทีม <strong>ICT4</strong>
+      พัฒนาโดย <strong>SuperAnawat</strong> ทีม <strong>ICT4</strong>
     </footer>
   </div>
 </div>
@@ -222,7 +222,7 @@
 
   socket.on("connect_error", (error) => {
       console.error("Connection Error:", error);
-      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
+      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบ URL';
   });
 
   socket.on("disconnect", () => {
