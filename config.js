@@ -1,16 +1,6 @@
+// config.js
 const CONFIG = {
-    get API_URL() {
-        return localStorage.getItem("sarabot_api_url") 
-            || "https://tipped-roast-tamale.ngrok-free.dev";
-    },
-
-    SOCKET_OPTIONS: {
-        transports: ["websocket"],  // ← เปลี่ยนเป็น websocket อย่างเดียว ไม่ใช้ polling
-        extraHeaders: {
-            "ngrok-skip-browser-warning": "true"
-        },
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 2000
-    }
+    // นำ URL ที่ได้จาก ngrok มาใส่ที่นี่ (เปลี่ยนใหม่ทุกครั้งที่รัน ngrok ใหม่)
+    // หมายเหตุ: ใช้ https:// และไม่ต้องมีเครื่องหมาย / ต่อท้าย
+    API_URL: "https://tipped-roast-tamale.ngrok-free.dev" 
 };
