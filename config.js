@@ -1,9 +1,9 @@
+// config.js
 const CONFIG = {
     API_URL: "https://tipped-roast-tamale.ngrok-free.dev",
 
     SOCKET_OPTIONS: {
-        transports: ["polling"],
-        upgrade: false,            // ← ห้าม upgrade ไป websocket เด็ดขาด
+        transports: ["websocket", "polling"],
         extraHeaders: {
             "ngrok-skip-browser-warning": "true"
         },
