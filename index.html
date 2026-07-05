@@ -114,6 +114,39 @@
     #sendBtn:hover {
       background: #45a049;
     }
+    /* การตั้งค่าสำหรับไอคอนกำลังคิด (Typing Indicator) */
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 0;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background-color: #888;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    /* หน่วงเวลาให้แต่ละจุดเด้งไม่พร้อมกัน */
+    .typing-indicator span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      }
+      40% {
+        transform: scale(1);
+      }
+    }
 
     /* Responsive layout for mobile */
     @media (max-width: 768px) {
@@ -200,7 +233,8 @@
 
       appendMessage(message, 'user');
       input.value = '';
-      status.textContent = 'กำลังคิด...';
+      // เปลี่ยนบรรทัดนี้ จาก status.textContent = 'กำลังคิด...';
+      status.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
       currentBotDiv = null;
 
       // ส่งข้อความไป Flask SocketIO
@@ -232,14 +266,16 @@
       if (currentBotDiv) {
           currentBotDiv.innerHTML = data.html;
       }
-      status.textContent = '';
+      // ล้างแอนิเมชันออกเมื่อตอบเสร็จ
+      status.innerHTML = '';
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
   // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
       appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
-      status.textContent = '';
+      // ล้างแอนิเมชันออกเมื่อเกิด Error
+      status.innerHTML = '';
   });
 
   // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
