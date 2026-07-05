@@ -209,10 +209,9 @@
   const chatBox = document.getElementById('chatBox');
   const status = document.getElementById('status');
 
-  // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
-  const socket = io(CONFIG.API_URL, {
-      transports: ["websocket", "polling"]
-  });
+  // ใช้ CONFIG.SOCKET_OPTIONS จาก config.js
+  // transports: ["websocket"] อย่างเดียว — ป้องกัน CORS error จาก polling ผ่าน ngrok
+  const socket = io(CONFIG.API_URL, CONFIG.SOCKET_OPTIONS);
 
   let currentBotDiv = null;
 
