@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chatbot ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา</title>
+  <title>AI Chatbot ให้คำปรึกษาการร่างคำฟ้อง</title>
   <style>
     * {
       box-sizing: border-box;
@@ -93,15 +93,12 @@
       gap: 10px;
     }
 
-    #userInput{
-      flex:1;
-      min-height:44px;
-      max-height:120px;
-      resize:none;
-      padding:10px;
-      border-radius:8px;
-      border:1px solid #ccc;
-      font-size:16px;
+    #userInput {
+      flex-grow: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
 
     #sendBtn {
@@ -134,21 +131,6 @@
       #chatBox {
         height: 300px;
       }
-
-        /* 🔥 เพิ่มส่วนนี้ */
-  #inputContainer{
-    position: sticky;
-    bottom: 0;
-    background: white;
-    padding: 10px;
-    z-index: 999;
-  }
-
-  #userInput{
-    font-size: 16px;
-  }
-
-      
     }
     footer {
       margin-top: 20px;
@@ -158,24 +140,6 @@
       border-top: 1px solid #eee;
       padding-top: 15px;
     }
-     .loading-spinner {
-      width: 24px;
-      height: 24px;
-      border: 4px solid #ddd;
-      border-top: 4px solid #4caf50;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: inline-block;
-    }
-    
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
   </style>
 </head>
 <body>
@@ -184,18 +148,17 @@
   <img id="robotImage" src="./ict4.gif" alt="ICT4 Animation">
 
   <div id="chatContainer">    
-    <h2>💬 AI Chatbot ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา</h2>
+    <h2>💬 AI ChatBot ให้คำปรึกษาการร่างคำฟ้อง</h2>
     <div id="chatBox"></div>
     <div id="status"></div>
     <div id="inputContainer">
-      <!--<input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />-->
-      <textarea id="userInput" placeholder="พิมพ์คำถามของคุณ..." rows="2"></textarea>
+      <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />
       <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
     </div>
     <footer>
       <a href="https://infocenter.oic.go.th/สำนักงานอัยการสูงสุด/topic.php?gid=15124&mid=1017" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
       🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
-      พัฒนาโดย ทีม <strong>ICT4</strong>
+      พัฒนาโดย <strong>SuperAnawat</strong> ทีม <strong>ICT4</strong>
     </footer>
   </div>
 </div>
@@ -210,7 +173,10 @@
   const status = document.getElementById('status');
 
   // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
-  const socket = io(CONFIG.API_URL, CONFIG.SOCKET_OPTIONS);
+  const socket = io(CONFIG.API_URL, {
+      transports: ["websocket", "polling"]
+  });
+
   let currentBotDiv = null;
 
   socket.on("connect", () => {
@@ -219,7 +185,7 @@
 
   socket.on("connect_error", (error) => {
       console.error("Connection Error:", error);
-      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
+      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบ URL';
   });
 
   socket.on("disconnect", () => {
@@ -234,7 +200,7 @@
 
       appendMessage(message, 'user');
       input.value = '';
-      status.innerHTML = '<span class="loading-spinner"></span>';
+      status.textContent = 'กำลังคิด...';
       currentBotDiv = null;
 
       // ส่งข้อความไป Flask SocketIO
@@ -266,14 +232,14 @@
       if (currentBotDiv) {
           currentBotDiv.innerHTML = data.html;
       }
-      status.innerHTML = '';
+      status.textContent = '';
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
   // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
       appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
-      status.innerHTML = '';
+      status.textContent = '';
   });
 
   // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
@@ -292,19 +258,11 @@
   }
 
   // กด Enter เพื่อส่งข้อความ
- // document.getElementById('userInput').addEventListener('keypress', function(e) {
- //     if (e.key === 'Enter') {
-  //        sendMessage();
-  //    }
- // });
-  document.getElementById('userInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
-
-  
+  document.getElementById('userInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+          sendMessage();
+      }
+  });
 </script>
 
 </body>
