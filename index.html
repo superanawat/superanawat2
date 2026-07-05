@@ -218,7 +218,7 @@
 
   socket.on("connect_error", (error) => {
       console.error("Connection Error:", error);
-      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบ URL';
+      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
   });
 
   socket.on("disconnect", () => {
