@@ -6,4 +6,5 @@ const CONFIG = {
     API_URL: [
         "https://36d9-182-52-236-56.ngrok-free.app",
         "https://tipped-roast-tamale.ngrok-free.dev"
+        ]
 };
