@@ -234,7 +234,10 @@
   const status = document.getElementById('status');
 
 // 1. ฟังก์ชันเลือกเครื่อง (รักษา Session เดิม) - [คงไว้เหมือนเดิม]
-  function getPersistentBackend() {
+// ใน index.html หาบรรทัดที่ประกาศ const socket และเปลี่ยนเป็นแบบนี้:
+
+// ฟังก์ชันดึง URL จาก Array
+function getPersistentBackend() {
     let assignedBackend = localStorage.getItem('sarabot_backend_affinity');
     
     if (!assignedBackend || !CONFIG.API_URLS.includes(assignedBackend)) {
@@ -243,12 +246,12 @@
         localStorage.setItem('sarabot_backend_affinity', assignedBackend);
     }
     return assignedBackend;
-  }
+}
 
-// 2. สร้าง Socket โดยเรียกใช้ฟังก์ชันเลือกเครื่อง
-  const socket = io(getPersistentBackend(), {
-      transports: ["websocket", "polling"]
-  });
+// สร้าง Socket
+const socket = io(getPersistentBackend(), {
+    transports: ["websocket", "polling"]
+});
 
   console.log("กำลังเชื่อมต่อไปที่:", getPersistentBackend()); // เพิ่มบรรทัดนี้
   // 3. รวมเหตุการณ์ทั้งหมดไว้ที่นี่
