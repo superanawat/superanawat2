@@ -233,20 +233,45 @@
   const chatBox = document.getElementById('chatBox');
   const status = document.getElementById('status');
 
-  // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
-  const socket = io(CONFIG.API_URL, {
+// 1. ฟังก์ชันเลือกเครื่อง (รักษา Session เดิม) - [คงไว้เหมือนเดิม]
+  function getPersistentBackend() {
+    let assignedBackend = localStorage.getItem('sarabot_backend_affinity');
+    
+    if (!assignedBackend || !CONFIG.API_URLS.includes(assignedBackend)) {
+        const randomIndex = Math.floor(Math.random() * CONFIG.API_URLS.length);
+        assignedBackend = CONFIG.API_URLS[randomIndex];
+        localStorage.setItem('sarabot_backend_affinity', assignedBackend);
+    }
+    return assignedBackend;
+  }
+
+// 2. สร้าง Socket โดยเรียกใช้ฟังก์ชันเลือกเครื่อง
+  const socket = io(getPersistentBackend(), {
       transports: ["websocket", "polling"]
   });
 
-  let currentBotDiv = null;
-
+  // 3. รวมเหตุการณ์ทั้งหมดไว้ที่นี่
   socket.on("connect", () => {
       console.log("Connected to Backend successfully:", socket.id);
   });
 
+  // ดักจับ Error ไว้ในฟังก์ชันนี้เท่านั้น
   socket.on("connect_error", (error) => {
       console.error("Connection Error:", error);
-      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
+      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้...';
+      
+      // Failover Logic: ตรวจสอบและย้ายเครื่องเมื่อเกิดข้อผิดพลาด
+      const userConfirmed = confirm(
+          "⚠️ ระบบตรวจพบปัญหาการเชื่อมต่อกับเครื่องปัจจุบัน\n" +
+          "จำเป็นต้องย้ายไปเชื่อมต่อเครื่องใหม่\n" +
+          "ซึ่งจะทำให้ประวัติการสนทนาเดิมหายไป\n\n" +
+          "กด 'ตกลง' เพื่อรีโหลดและเชื่อมต่อใหม่"
+      );
+
+      if (userConfirmed) {
+          localStorage.removeItem('sarabot_backend_affinity'); // ลบค่าเก่าทิ้ง
+          location.reload(); // รีโหลดหน้าใหม่
+      }
   });
 
   socket.on("disconnect", () => {
