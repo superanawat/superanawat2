@@ -206,11 +206,11 @@
     background-color: #ccc; /* สีเทา (ไม่ได้เชื่อมต่อ) */
     display: inline-block;
     margin-right: 5px;
-}
-.indicator.active {
-    background-color: #4caf50; /* สีเขียว (กำลังเชื่อมต่อ) */
-    box-shadow: 0 0 5px #4caf50;
-}
+    }
+    .indicator.active {
+        background-color: #4caf50; /* สีเขียว (กำลังเชื่อมต่อ) */
+        box-shadow: 0 0 5px #4caf50;
+    }
   </style>
 </head>
 <body>
@@ -228,12 +228,13 @@
       <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
     </div>
     [พิมพ์คำถามด้วยแป้นพิมพ์หรือไมโครโฟน แล้วกดส่ง...]
+
+    <footer>
     <div id="serverStatus" style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center; font-size: 14px; color: #555;">
     สถานะเครื่อง:
     <div id="status-0" class="indicator">Node 1</div>
     <div id="status-1" class="indicator">Node 2</div>
-</div>
-    <footer>
+    </div>
       <a href="https://www3.ago.go.th/center/lawaid/" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
       🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
       พัฒนาโดย ทีม <strong>ICT4</strong>
