@@ -250,6 +250,7 @@
       transports: ["websocket", "polling"]
   });
 
+  console.log("กำลังเชื่อมต่อไปที่:", getPersistentBackend()); // เพิ่มบรรทัดนี้
   // 3. รวมเหตุการณ์ทั้งหมดไว้ที่นี่
   socket.on("connect", () => {
       console.log("Connected to Backend successfully:", socket.id);
