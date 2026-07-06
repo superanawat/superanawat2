@@ -3,8 +3,6 @@
 const CONFIG = {
     // นำ URL ที่ได้จาก ngrok มาใส่ที่นี่ (เปลี่ยนใหม่ทุกครั้งที่รัน ngrok ใหม่)
     // หมายเหตุ: ใช้ https:// และไม่ต้องมีเครื่องหมาย / ต่อท้าย
-    API_URLS: [
-        "https://0ba3-182-52-236-56.ngrok-free.app ",
-        "https://tipped-roast-tamale.ngrok-free.dev"
-        ]
+    API_URL: 
+        "https://0ba3-182-52-236-56.ngrok-free.app "
 };
