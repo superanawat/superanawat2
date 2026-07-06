@@ -114,6 +114,32 @@
     #sendBtn:hover {
       background: #45a049;
     }
+
+    #micBtn {
+      padding: 10px 14px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2196f3;
+      color: white;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #micBtn:hover {
+      background: #1976d2;
+    }
+
+    #micBtn.recording {
+      background: #e53935;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(229,57,53,0.6); }
+      70% { box-shadow: 0 0 0 10px rgba(229,57,53,0); }
+      100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
+    }
     /* การตั้งค่าสำหรับไอคอนกำลังคิด (Typing Indicator) */
     .typing-indicator {
       display: inline-flex;
@@ -186,6 +212,7 @@
     <div id="status"></div>
     <div id="inputContainer">
       <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />
+      <button id="micBtn" onclick="toggleVoiceInput()" title="พูดเพื่อพิมพ์">🎤</button>
       <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
     </div>
     <footer>
@@ -299,6 +326,66 @@
           sendMessage();
       }
   });
+
+  // ===== ฟีเจอร์พิมพ์ด้วยเสียง (Web Speech API) =====
+  const micBtn = document.getElementById('micBtn');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  let isRecording = false;
+
+  if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = 'th-TH';       // ตั้งภาษาไทยเป็นหลัก
+      recognition.continuous = false;   // หยุดเองเมื่อพูดจบ
+      recognition.interimResults = true; // แสดงผลระหว่างพูดด้วย (ยังไม่ final)
+
+      recognition.onstart = () => {
+          isRecording = true;
+          micBtn.classList.add('recording');
+          status.textContent = '🎙️ กำลังฟัง... พูดได้เลย';
+      };
+
+      recognition.onresult = (event) => {
+          let transcript = '';
+          for (let i = 0; i < event.results.length; i++) {
+              transcript += event.results[i][0].transcript;
+          }
+          document.getElementById('userInput').value = transcript;
+      };
+
+      recognition.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+          if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+              status.textContent = '⚠️ กรุณาอนุญาตให้ใช้ไมโครโฟน';
+          } else if (event.error === 'no-speech') {
+              status.textContent = '⚠️ ไม่ได้ยินเสียงพูด ลองใหม่อีกครั้ง';
+          } else {
+              status.textContent = '⚠️ เกิดข้อผิดพลาดในการรับเสียง';
+          }
+      };
+
+      recognition.onend = () => {
+          isRecording = false;
+          micBtn.classList.remove('recording');
+          if (status.textContent.includes('กำลังฟัง')) {
+              status.textContent = '';
+          }
+      };
+  } else {
+      // เบราว์เซอร์ไม่รองรับ (เช่น Firefox บาง version) ให้ซ่อนปุ่มไมค์
+      micBtn.style.display = 'none';
+      console.warn('เบราว์เซอร์นี้ไม่รองรับ Web Speech API');
+  }
+
+  function toggleVoiceInput() {
+      if (!recognition) return;
+      if (isRecording) {
+          recognition.stop();
+      } else {
+          document.getElementById('userInput').value = '';
+          recognition.start();
+      }
+  }
 </script>
 
 </body>
