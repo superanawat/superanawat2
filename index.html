@@ -231,9 +231,9 @@
 
     <footer>
     <div id="serverStatus" style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center; font-size: 14px; color: #555;">
-        สถานะเครื่อง:
-        <div id="status-0" class="indicator" onclick="switchServer(0)" title="คลิกเพื่อสลับไปเครื่อง 1"></div>N1
-        <div id="status-1" class="indicator" onclick="switchServer(1)" title="คลิกเพื่อสลับไปเครื่อง 2"></div>N2
+    สถานะเครื่อง:
+    <div id="status-0" class="indicator">N1</div>
+    <div id="status-1" class="indicator">N2</div>
     </div>
       <a href="https://www3.ago.go.th/center/lawaid/" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
       🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
@@ -265,20 +265,21 @@ function getPersistentBackend() {
     }
     return assignedBackend;
 }
-  // ฟังก์ชันสำหรับสลับเครื่อง
-function switchServer(index) {
-    const newUrl = CONFIG.API_URLS[index];
-    const currentUrl = localStorage.getItem('sarabot_backend_affinity');
-
-    if (newUrl === currentUrl) {
-        alert("คุณกำลังใช้งานเครื่องนี้อยู่แล้วครับ");
-        return;
-    }
-
-    if (confirm(`คุณต้องการสลับไปใช้งานเครื่องที่ ${index + 1} หรือไม่?\n(ประวัติการสนทนาในหน้าปัจจุบันจะถูกรีเซ็ต)`)) {
-        localStorage.setItem('sarabot_backend_affinity', newUrl);
-        location.reload(); // รีโหลดเพื่อเชื่อมต่อ Socket ใหม่กับเครื่องที่เลือก
-    }
+  function updateServerUI() {
+    const activeUrl = getPersistentBackend(); // ดึงเครื่องที่ใช้อยู่ปัจจุบัน
+    const indicators = document.querySelectorAll('.indicator');
+    
+    // ตรวจสอบเครื่องที่ 1 และ 2
+    CONFIG.API_URLS.forEach((url, index) => {
+        const el = document.getElementById(`status-${index}`);
+        if (el) {
+            if (url === activeUrl) {
+                el.classList.add('active'); // ถ้าใช่เครื่องที่ต่ออยู่ ให้เป็นสีเขียว
+            } else {
+                el.classList.remove('active'); // ถ้าไม่ใช่ ให้เป็นสีเทา
+            }
+        }
+    });
 }
 
 // เรียกใช้ฟังก์ชันนี้หลังจากหน้าที่โหลดเสร็จ
