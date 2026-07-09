@@ -289,6 +289,17 @@
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
+  // รับข้อความแจ้งสถานะการทำงานจาก Backend
+  socket.on("response_status", (data) => {
+      // แสดงข้อความสถานะ พร้อมแอนิเมชันจุดเด้งดุ๊กดิ๊ก เพื่อให้รู้ว่าระบบกำลังทำงานอยู่
+      status.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="color: #2196f3; font-weight: 500;">${data.message}</span>
+              <div class="typing-indicator"><span></span><span></span><span></span></div>
+          </div>
+      `;
+  });
+
   // จบ stream (ประมวลผลข้อความสุดท้ายให้สมบูรณ์ เช่น จัด Format หรือแปลง Markdown)
   socket.on("response_done", (data) => {
       if (currentBotDiv) {
