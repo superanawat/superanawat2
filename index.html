@@ -320,7 +320,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
 <script src="./config.js"></script>
+<script>
+  // ==========================================
+  // ระบบป้องกันการเปิดหลายแท็บ (รันเป็นอันดับแรกสุด)
+  // ==========================================
+  const appChannel = new BroadcastChannel('single_tab_channel');
+  
+  // ทักทายไปถามแท็บอื่น (ถ้ามี) ว่า "มีใครเปิดเว็บนี้อยู่ไหม?"
+  appChannel.postMessage('check_duplicate');
 
+  appChannel.onmessage = (event) => {
+      if (event.data === 'check_duplicate') {
+          // ถ้าเราเปิดอยู่ก่อนแล้ว และมีคนถามเข้ามา ให้ตอบกลับไปว่า "ฉันเปิดอยู่แล้ว!"
+          appChannel.postMessage('duplicate_found');
+      }
+      if (event.data === 'duplicate_found') {
+          // ถ้าได้รับคำตอบนี้ แปลว่ามีแท็บอื่นเปิดทำงานอยู่ก่อนแล้ว
+          // ทำการเปลี่ยนหน้าจอเป็นข้อความแจ้งเตือนทันที
+          document.body.innerHTML = `
+              <div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#f2f2f2; font-family: 'Segoe UI', sans-serif;">
+                  <div style="background:white; padding:40px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1); text-align:center;">
+                      <h2 style="color:#e53935; margin-top:0;">⚠️ ตรวจพบการเปิดหลายหน้าต่าง</h2>
+                      <p style="color:#666; font-size:16px;">ระบบจำกัดให้ใช้งานได้เพียง 1 แท็บต่อเบราว์เซอร์เท่านั้น<br>กรุณากลับไปใช้งานที่แท็บแรก หรือปิดแท็บนี้</p>
+                  </div>
+              </div>
+          `;
+          
+          // ตัดการเชื่อมต่อ Socket ถ้ามีการเชื่อมต่อไปแล้ว เพื่อลดภาระเซิร์ฟเวอร์
+          if (typeof socket !== 'undefined' && socket) {
+              socket.disconnect();
+          }
+      }
+  };
+  // ==========================================
 <script>
   const chatBox = document.getElementById('chatBox');
   const status = document.getElementById('status');
