@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ AI</title>
+  <title>ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ AI </title>
   <style>
     * {
       box-sizing: border-box;
@@ -115,6 +115,7 @@
       background: #45a049;
     }
 
+    /* เพิ่มสไตล์สำหรับปุ่ม Reset */
     #resetBtn {
       padding: 10px 14px;
       font-size: 16px;
@@ -155,7 +156,7 @@
       70% { box-shadow: 0 0 0 10px rgba(229,57,53,0); }
       100% { box-shadow: 0 0 0 0 rgba(229,57,53,0); }
     }
-
+    /* การตั้งค่าสำหรับไอคอนกำลังคิด (Typing Indicator) */
     .typing-indicator {
       display: inline-flex;
       align-items: center;
@@ -171,103 +172,41 @@
       animation: bounce 1.4s infinite ease-in-out both;
     }
 
-    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    /* หน่วงเวลาให้แต่ละจุดเด้งไม่พร้อมกัน */
+    .typing-indicator span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
 
     @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0); }
-      40% { transform: scale(1); }
+      0%, 80%, 100% {
+        transform: scale(0);
+      }
+      40% {
+        transform: scale(1);
+      }
     }
 
-    /* สไตล์สำหรับ Custom Popup Modal */
-    .modal-overlay {
-      display: none; /* ซ่อนไว้เริ่มต้น */
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      animation: modalFadeIn 0.3s ease;
-    }
-
-    @keyframes modalFadeIn {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-content h3 {
-      margin-top: 0;
-      color: #333;
-    }
-
-    .modal-content p {
-      color: #666;
-      font-size: 15px;
-      margin-bottom: 20px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .modal-btn {
-      padding: 10px 20px;
-      font-size: 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .modal-btn-confirm {
-      background: #e53935;
-      color: white;
-    }
-
-    .modal-btn-confirm:hover {
-      background: #c62828;
-    }
-
-    .modal-btn-cancel {
-      background: #e0e0e0;
-      color: #333;
-    }
-
-    .modal-btn-cancel:hover {
-      background: #d5d5d5;
-    }
-
+    /* Responsive layout for mobile */
     @media (max-width: 768px) {
       #mainContainer {
         flex-direction: column;
         padding: 15px;
       }
+
       #robotImage {
         width: 100%;
         max-width: 100%;
         align-self: center;
       }
+
       #chatBox {
         height: 300px;
       }
     }
-    
     footer {
       margin-top: 20px;
       font-size: 14px;
@@ -281,7 +220,7 @@
 <body>
 
 <div id="mainContainer">
-  <img id="robotImage" src="./ict4.gif" alt="ICT4 Animation" loading="lazy">
+  <img id="robotImage" src="./ict4.gif" alt="ICT4 Animation">
 
   <div id="chatContainer">   
     <h2>💬ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ</h2>
@@ -291,52 +230,34 @@
       <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />
       <button id="micBtn" onclick="toggleVoiceInput()" title="พูดเพื่อพิมพ์">🎤</button>
       <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
-      <button id="resetBtn" onclick="openResetModal()" title="ล้างการสนทนา">🔄 รีเซ็ต</button>
+      <!-- เพิ่มปุ่ม Reset ตรงนี้ -->
+      <button id="resetBtn" onclick="resetChat()" title="ล้างการสนทนา">🔄 รีเซ็ต</button>
     </div>
     [พิมพ์คำถามด้วยแป้นพิมพ์ หรือไมโครโฟน แล้วกดส่ง]<br><br>
     *** การค้นหาร่างคำฟ้อง : พิมพ์คำถาม เช่น "ร่างคำฟ้องทำร้ายร่างกายผู้อื่น" --> ระบบจะแสดงชื่อไฟล์ตัวอย่างร่างคำฟ้องในระบบที่เกี่ยวข้อง
     <footer>
-      <a href="https://www.ocs.go.th/searchlaw" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a><br>
+      <a href="https://www.ocs.go.th/searchlaw" class="btn" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
       🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง<br>
       พัฒนาโดย ทีม <strong>ICT4</strong>
     </footer>
   </div>
 </div>
 
-<!-- โครงสร้างของ Custom Popup Modal -->
-<div id="resetModal" class="modal-overlay">
-  <div class="modal-content">
-    <h3>🔄 ยืนยันการรีเซ็ตข้อมูล</h3>
-    <p>คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?</p>
-    <div class="modal-buttons">
-      <button class="modal-btn modal-btn-confirm" onclick="handleReset(true)">ใช่, ล้างข้อมูล</button>
-      <button class="modal-btn modal-btn-cancel" onclick="handleReset(false)">ยกเลิก</button>
-    </div>
-  </div>
-</div>
-
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
 <script src="./config.js"></script>
 
 <script>
   const chatBox = document.getElementById('chatBox');
   const status = document.getElementById('status');
-  const resetModal = document.getElementById('resetModal');
 
+  // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
   const socket = io(CONFIG.API_URL, {
-      transports: ["websocket", "polling"],
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      timeout: 20000,
+      transports: ["websocket", "polling"]
   });
 
   let currentBotDiv = null;
-  let isAutoScrolling = false;
 
   socket.on("connect", () => {
       console.log("Connected to Backend successfully:", socket.id);
@@ -351,16 +272,6 @@
       console.log("Disconnected");
   });
 
-  function scrollToBottom() {
-      if (!isAutoScrolling) {
-          window.requestAnimationFrame(() => {
-              chatBox.scrollTop = chatBox.scrollHeight;
-              isAutoScrolling = false;
-          });
-          isAutoScrolling = true;
-      }
-  }
-
   function sendMessage() {
       const input = document.getElementById('userInput');
       const message = input.value.trim();
@@ -372,85 +283,81 @@
       status.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
       currentBotDiv = null;
 
-      socket.emit("peopleChat", DOMPurify.sanitize(message));
+      // ส่งข้อความไป Flask SocketIO
+      socket.emit("peopleChat", message);
   }
 
-  /* --- ฟังก์ชันการทำงานของ Custom Popup --- */
-  
-  // 1. สั่งเปิดตัว Popup ขึ้นมาบนจอ
-   Lahฟังก์ชัน openResetModal() {
-      resetModal.style.display = 'flex';
-  }
-
-  // 2. จัดการหลังจากผู้ใช้กดปุ่มเลือกใน Popup
-  function handleReset(confirmAction) {
-      // ปิดหน้าต่าง Popup เสมอไม่ว่าจะเลือกอะไร
-      resetModal.style.display = 'none';
-      
-      // ถ้ากดยืนยัน (true) ค่อยเคลียร์ค่าในระบบ
-      if (confirmAction) {
-          chatBox.innerHTML = '';
-          status.innerHTML = ''; 
-          document.getElementById('userInput').value = ''; 
-          currentBotDiv = null;    
+  // เพิ่มฟังก์ชันสำหรับเคลียร์หน้าจอแชท
+  function resetChat() {
+      if (confirm("คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?")) {
+          chatBox.innerHTML = ''; // ล้างข้อความทั้งหมดในกล่องแชท
+          status.innerHTML = '';  // ล้างสถานะการทำงาน
+          document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
+          currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
       }
   }
 
+  // เริ่ม stream (AI กำลังเริ่มพิมพ์)
   socket.on("response_start", () => {
       currentBotDiv = document.createElement('div');
       currentBotDiv.className = 'message bot';
       currentBotDiv.innerHTML = '';
       chatBox.appendChild(currentBotDiv);
-      scrollToBottom();
+      chatBox.scrollTop = chatBox.scrollHeight;
   });
 
+  // รับข้อความทีละ chunk (Streaming)
   socket.on("response_stream", (data) => {
       if (!currentBotDiv) {
           currentBotDiv = document.createElement('div');
           currentBotDiv.className = 'message bot';
           chatBox.appendChild(currentBotDiv);
       }
-      currentBotDiv.textContent += data.text; 
-      scrollToBottom();
+      currentBotDiv.innerHTML += data.text;
+      chatBox.scrollTop = chatBox.scrollHeight;
   });
 
+  // รับข้อความแจ้งสถานะการทำงานจาก Backend
   socket.on("response_status", (data) => {
       status.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="color: #2196f3; font-weight: 500;">${DOMPurify.sanitize(data.message)}</span>
+              <span style="color: #2196f3; font-weight: 500;">${data.message}</span>
               <div class="typing-indicator"><span></span><span></span><span></span></div>
           </div>
       `;
   });
 
+  // จบ stream (ประมวลผลข้อความสุดท้ายให้สมบูรณ์ เช่น จัด Format หรือแปลง Markdown)
   socket.on("response_done", (data) => {
       if (currentBotDiv) {
-          const cleanHTML = DOMPurify.sanitize(data.html || marked.parse(currentBotDiv.textContent));
-          currentBotDiv.innerHTML = cleanHTML;
+          currentBotDiv.innerHTML = data.html;
       }
       status.innerHTML = '';
-      scrollToBottom();
+      chatBox.scrollTop = chatBox.scrollHeight;
   });
 
+  // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
       appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
       status.innerHTML = '';
   });
 
+  // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
   function appendMessage(text, sender) {
       const div = document.createElement('div');
       div.className = 'message ' + sender;
 
       if (sender === 'bot') {
-          div.innerHTML = DOMPurify.sanitize(text);
+          div.innerHTML = text;
       } else {
           div.textContent = text;
       }
 
       chatBox.appendChild(div);
-      scrollToBottom();
+      chatBox.scrollTop = chatBox.scrollHeight;
   }
 
+  // กด Enter เพื่อส่งข้อความ
   document.getElementById('userInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
           sendMessage();
