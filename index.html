@@ -115,6 +115,22 @@
       background: #45a049;
     }
 
+    /* เพิ่มสไตล์สำหรับปุ่ม Reset */
+    #resetBtn {
+      padding: 10px 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #e53935;
+      color: white;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #resetBtn:hover {
+      background: #c62828;
+    }
+
     #micBtn {
       padding: 10px 14px;
       font-size: 18px;
@@ -206,7 +222,7 @@
 <div id="mainContainer">
   <img id="robotImage" src="./ict4.gif" alt="ICT4 Animation">
 
-  <div id="chatContainer">    
+  <div id="chatContainer">   
     <h2>💬ผู้ช่วยระบบการสืบค้นตัวอย่างร่างคำฟ้องคดีอาญา และคำร้องต่างๆ</h2>
     <div id="chatBox"></div>
     <div id="status"></div>
@@ -214,6 +230,8 @@
       <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />
       <button id="micBtn" onclick="toggleVoiceInput()" title="พูดเพื่อพิมพ์">🎤</button>
       <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
+      <!-- เพิ่มปุ่ม Reset ตรงนี้ -->
+      <button id="resetBtn" onclick="resetChat()" title="ล้างการสนทนา">🔄 รีเซ็ต</button>
     </div>
     [พิมพ์คำถามด้วยแป้นพิมพ์ หรือไมโครโฟน แล้วกดส่ง]<br><br>
     *** การค้นหาร่างคำฟ้อง : พิมพ์คำถาม เช่น "ร่างคำฟ้องทำร้ายร่างกายผู้อื่น" --> ระบบจะแสดงชื่อไฟล์ตัวอย่างร่างคำฟ้องในระบบที่เกี่ยวข้อง
@@ -262,12 +280,21 @@
 
       appendMessage(message, 'user');
       input.value = '';
-      // เปลี่ยนบรรทัดนี้ จาก status.textContent = 'กำลังคิด...';
       status.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
       currentBotDiv = null;
 
       // ส่งข้อความไป Flask SocketIO
       socket.emit("peopleChat", message);
+  }
+
+  // เพิ่มฟังก์ชันสำหรับเคลียร์หน้าจอแชท
+  function resetChat() {
+      if (confirm("คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?")) {
+          chatBox.innerHTML = ''; // ล้างข้อความทั้งหมดในกล่องแชท
+          status.innerHTML = '';  // ล้างสถานะการทำงาน
+          document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
+          currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
+      }
   }
 
   // เริ่ม stream (AI กำลังเริ่มพิมพ์)
@@ -292,7 +319,6 @@
 
   // รับข้อความแจ้งสถานะการทำงานจาก Backend
   socket.on("response_status", (data) => {
-      // แสดงข้อความสถานะ พร้อมแอนิเมชันจุดเด้งดุ๊กดิ๊ก เพื่อให้รู้ว่าระบบกำลังทำงานอยู่
       status.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px;">
               <span style="color: #2196f3; font-weight: 500;">${data.message}</span>
@@ -306,7 +332,6 @@
       if (currentBotDiv) {
           currentBotDiv.innerHTML = data.html;
       }
-      // ล้างแอนิเมชันออกเมื่อตอบเสร็จ
       status.innerHTML = '';
       chatBox.scrollTop = chatBox.scrollHeight;
   });
@@ -314,7 +339,6 @@
   // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
       appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
-      // ล้างแอนิเมชันออกเมื่อเกิด Error
       status.innerHTML = '';
   });
 
@@ -348,9 +372,9 @@
 
   if (SpeechRecognition) {
       recognition = new SpeechRecognition();
-      recognition.lang = 'th-TH';       // ตั้งภาษาไทยเป็นหลัก
-      recognition.continuous = false;   // หยุดเองเมื่อพูดจบ
-      recognition.interimResults = true; // แสดงผลระหว่างพูดด้วย (ยังไม่ final)
+      recognition.lang = 'th-TH';       
+      recognition.continuous = false;   
+      recognition.interimResults = true; 
 
       recognition.onstart = () => {
           isRecording = true;
@@ -385,7 +409,6 @@
           }
       };
   } else {
-      // เบราว์เซอร์ไม่รองรับ (เช่น Firefox บาง version) ให้ซ่อนปุ่มไมค์
       micBtn.style.display = 'none';
       console.warn('เบราว์เซอร์นี้ไม่รองรับ Web Speech API');
   }
