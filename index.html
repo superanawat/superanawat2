@@ -179,6 +179,80 @@
       40% { transform: scale(1); }
     }
 
+    /* สไตล์สำหรับ Custom Popup Modal */
+    .modal-overlay {
+      display: none; /* ซ่อนไว้เริ่มต้น */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .modal-content p {
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .modal-btn {
+      padding: 10px 20px;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .modal-btn-confirm {
+      background: #e53935;
+      color: white;
+    }
+
+    .modal-btn-confirm:hover {
+      background: #c62828;
+    }
+
+    .modal-btn-cancel {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .modal-btn-cancel:hover {
+      background: #d5d5d5;
+    }
+
     @media (max-width: 768px) {
       #mainContainer {
         flex-direction: column;
@@ -207,7 +281,6 @@
 <body>
 
 <div id="mainContainer">
-  <!-- 3. เพิ่ม loading="lazy" ให้รูปภาพ -->
   <img id="robotImage" src="./ict4.gif" alt="ICT4 Animation" loading="lazy">
 
   <div id="chatContainer">   
@@ -218,7 +291,7 @@
       <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ..." />
       <button id="micBtn" onclick="toggleVoiceInput()" title="พูดเพื่อพิมพ์">🎤</button>
       <button id="sendBtn" onclick="sendMessage()">ส่ง</button>
-      <button id="resetBtn" onclick="resetChat()" title="ล้างการสนทนา">🔄 รีเซ็ต</button>
+      <button id="resetBtn" onclick="openResetModal()" title="ล้างการสนทนา">🔄 รีเซ็ต</button>
     </div>
     [พิมพ์คำถามด้วยแป้นพิมพ์ หรือไมโครโฟน แล้วกดส่ง]<br><br>
     *** การค้นหาร่างคำฟ้อง : พิมพ์คำถาม เช่น "ร่างคำฟ้องทำร้ายร่างกายผู้อื่น" --> ระบบจะแสดงชื่อไฟล์ตัวอย่างร่างคำฟ้องในระบบที่เกี่ยวข้อง
@@ -230,9 +303,20 @@
   </div>
 </div>
 
+<!-- โครงสร้างของ Custom Popup Modal -->
+<div id="resetModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>🔄 ยืนยันการรีเซ็ตข้อมูล</h3>
+    <p>คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?</p>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-confirm" onclick="handleReset(true)">ใช่, ล้างข้อมูล</button>
+      <button class="modal-btn modal-btn-cancel" onclick="handleReset(false)">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<!-- 4. เพิ่ม DOMPurify สำหรับทำ Sanitize HTML ป้องกัน XSS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
 <script src="./config.js"></script>
@@ -240,8 +324,8 @@
 <script>
   const chatBox = document.getElementById('chatBox');
   const status = document.getElementById('status');
+  const resetModal = document.getElementById('resetModal');
 
-  // 1. ปรับ Socket.IO config ให้เชื่อมต่อมีประสิทธิภาพมากขึ้น
   const socket = io(CONFIG.API_URL, {
       transports: ["websocket", "polling"],
       reconnection: true,
@@ -252,7 +336,6 @@
   });
 
   let currentBotDiv = null;
-  // ตัวแปรสำหรับเช็คสถานะการเลื่อนจอ
   let isAutoScrolling = false;
 
   socket.on("connect", () => {
@@ -268,7 +351,6 @@
       console.log("Disconnected");
   });
 
-  // 2. ฟังก์ชันเลื่อนจอแบบประหยัดพลังงาน
   function scrollToBottom() {
       if (!isAutoScrolling) {
           window.requestAnimationFrame(() => {
@@ -290,16 +372,27 @@
       status.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
       currentBotDiv = null;
 
-      // ส่งข้อความไป Flask SocketIO (ทำ Sanitize ข้อความก่อนส่งถ้าจำเป็น ฝั่งหลังบ้านควรทำด้วย)
       socket.emit("peopleChat", DOMPurify.sanitize(message));
   }
 
-  function resetChat() {
-      if (confirm("คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?")) {
+  /* --- ฟังก์ชันการทำงานของ Custom Popup --- */
+  
+  // 1. สั่งเปิดตัว Popup ขึ้นมาบนจอ
+   Lahฟังก์ชัน openResetModal() {
+      resetModal.style.display = 'flex';
+  }
+
+  // 2. จัดการหลังจากผู้ใช้กดปุ่มเลือกใน Popup
+  function handleReset(confirmAction) {
+      // ปิดหน้าต่าง Popup เสมอไม่ว่าจะเลือกอะไร
+      resetModal.style.display = 'none';
+      
+      // ถ้ากดยืนยัน (true) ค่อยเคลียร์ค่าในระบบ
+      if (confirmAction) {
           chatBox.innerHTML = '';
           status.innerHTML = ''; 
           document.getElementById('userInput').value = ''; 
-          currentBotDiv = null;   
+          currentBotDiv = null;    
       }
   }
 
@@ -317,13 +410,7 @@
           currentBotDiv.className = 'message bot';
           chatBox.appendChild(currentBotDiv);
       }
-      
-      // การรับข้อมูลทีละ chunk อาจจะมีปัญหาถ้าข้อมูลเป็น HTML ครึ่งท่อน
-      // แนะนำให้ใช้ textContent สำหรับตอนแสดงผลระหว่างพิมพ์ เพื่อหลีกเลี่ยง XSS
-      // จากนั้นค่อยไป render เป็น HTML สมบูรณ์ตอน response_done
-      // หรือถ้า Backend ส่งมาเป็น text ธรรมดา ก็ใช้วิธีนี้ได้เลย
       currentBotDiv.textContent += data.text; 
-      
       scrollToBottom();
   });
 
@@ -338,7 +425,6 @@
 
   socket.on("response_done", (data) => {
       if (currentBotDiv) {
-          // 4. กรอง HTML ที่ได้รับจาก Backend ด้วย DOMPurify เพื่อป้องกัน XSS
           const cleanHTML = DOMPurify.sanitize(data.html || marked.parse(currentBotDiv.textContent));
           currentBotDiv.innerHTML = cleanHTML;
       }
@@ -356,7 +442,6 @@
       div.className = 'message ' + sender;
 
       if (sender === 'bot') {
-          // 4. กรองก่อนแสดงผล
           div.innerHTML = DOMPurify.sanitize(text);
       } else {
           div.textContent = text;
