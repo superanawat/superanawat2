@@ -267,30 +267,7 @@
       console.error("Connection Error:", error);
       status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
   });
-  // 1. สร้างหรือดึงรหัสจำแนกเบราว์เซอร์จาก localStorage
-  let browserId = localStorage.getItem("my_browser_id");
-  if (!browserId) {
-      // ถ้ายังไม่มี ให้สร้างขึ้นมาใหม่แบบสุ่ม
-      browserId = 'browser_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem("my_browser_id", browserId);
-  }
-  // 2. แนบ browserId ไปกับ Socket.IO ตอนเชื่อมต่อ
-  const socket = io(CONFIG.API_URL, {
-      transports: ["websocket", "polling"],
-      query: {
-          browser_id: browserId  // ส่งค่านี้ไปให้ Backend
-      }
-  });
 
-  // 3. ดักจับ Event กรณีโดน Backend ปฏิเสธ (เปิดซ้อน)
-  socket.on("already_connected", (data) => {
-      alert("คุณกำลังใช้งานระบบนี้ในแท็บอื่นอยู่ ไม่สามารถเปิดหลายแท็บพร้อมกันได้ครับ");
-      document.getElementById('inputContainer').style.display = 'none'; // ซ่อนช่องพิมพ์
-      status.innerHTML = '<span style="color:red;">ถูกจำกัดการใช้งาน เนื่องจากเปิดหลายหน้าต่าง</span>';
-      socket.disconnect(); // ตัดการเชื่อมต่อแท็บนี้ทันที
-  });
-
-  
   socket.on("disconnect", () => {
       console.log("Disconnected");
   });
