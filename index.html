@@ -294,6 +294,9 @@
           status.innerHTML = '';  // ล้างสถานะการทำงาน
           document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
           currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
+          // ---- เพิ่มบรรทัดนี้เข้าไปครับ ----
+          socket.emit("reset_chat"); 
+          // -----------------------------
       }
   }
 
@@ -341,7 +344,10 @@
       appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
       status.innerHTML = '';
   });
-
+  // รับข้อความยืนยันการล้างประวัติจาก Backend
+  socket.on("chat_reset_success", () => {
+      appendMessage("🔄 ล้างประวัติการสนทนาและการจดจำของ AI เรียบร้อยแล้ว เริ่มต้นบทสนทนาใหม่ได้เลยครับ", "bot");
+  });
   // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
   function appendMessage(text, sender) {
       const div = document.createElement('div');
