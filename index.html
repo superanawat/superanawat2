@@ -258,6 +258,7 @@
   });
 
   let currentBotDiv = null;
+  let ignoreStream = false; // <-- เพิ่มบรรทัดนี้ เพื่อเช็คว่าเพิ่งกดรีเซ็ตไปหรือไม่
 
   socket.on("connect", () => {
       console.log("Connected to Backend successfully:", socket.id);
@@ -282,6 +283,7 @@
       input.value = '';
       status.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
       currentBotDiv = null;
+      ignoreStream = false; // <-- เพิ่มบรรทัดนี้: อนุญาตให้รับข้อความจากบอทได้ตามปกติ
 
       // ส่งข้อความไป Flask SocketIO
       socket.emit("peopleChat", message);
@@ -294,6 +296,7 @@
           status.innerHTML = '';  // ล้างสถานะการทำงาน
           document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
           currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
+          ignoreStream = true; // <-- เพิ่มบรรทัดนี้: บอกให้ระบบเมินข้อความผีดิบที่กำลังหลุดมา
           // ---- เพิ่มบรรทัดนี้เข้าไปครับ ----
           socket.emit("reset_chat"); 
           // -----------------------------
@@ -302,6 +305,7 @@
 
   // เริ่ม stream (AI กำลังเริ่มพิมพ์)
   socket.on("response_start", () => {
+    if (ignoreStream) return; // <-- ดักไว้ ถ้าสั่งรีเซ็ตแล้ว ไม่ต้องทำงานต่อ
       currentBotDiv = document.createElement('div');
       currentBotDiv.className = 'message bot';
       currentBotDiv.innerHTML = '';
@@ -311,6 +315,7 @@
 
   // รับข้อความทีละ chunk (Streaming)
   socket.on("response_stream", (data) => {
+      if (ignoreStream) return; // <-- ดักไว้ ถ้าสั่งรีเซ็ตแล้ว ไม่ต้องทำงานต่อ
       if (!currentBotDiv) {
           currentBotDiv = document.createElement('div');
           currentBotDiv.className = 'message bot';
@@ -322,6 +327,7 @@
 
   // รับข้อความแจ้งสถานะการทำงานจาก Backend
   socket.on("response_status", (data) => {
+      if (ignoreStream) return; // <-- ดักไว้ ถ้าสั่งรีเซ็ตแล้ว ไม่ต้องทำงานต่อ
       status.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px;">
               <span style="color: #2196f3; font-weight: 500;">${data.message}</span>
@@ -332,6 +338,7 @@
 
   // จบ stream (ประมวลผลข้อความสุดท้ายให้สมบูรณ์ เช่น จัด Format หรือแปลง Markdown)
   socket.on("response_done", (data) => {
+      if (ignoreStream) return; // <-- ดักไว้ ถ้าสั่งรีเซ็ตแล้ว ไม่ต้องทำงานต่อ
       if (currentBotDiv) {
           currentBotDiv.innerHTML = data.html;
       }
