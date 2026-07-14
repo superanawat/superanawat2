@@ -296,13 +296,26 @@
           status.innerHTML = '';  // ล้างสถานะการทำงาน
           document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
           currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
-          ignoreStream = true; // <-- เพิ่มบรรทัดนี้: บอกให้ระบบเมินข้อความผีดิบที่กำลังหลุดมา
+          ignoreStream = true; // <-- ✅ เพิ่มบรรทัดนี้ ยกธงดักข้อความผีดิบทันทีที่กดตกลง
           // ---- เพิ่มบรรทัดนี้เข้าไปครับ ----
           socket.emit("reset_chat"); 
           // -----------------------------
       }
   }
-
+  // 2. ปรับปรุง Event ที่รับการยืนยันจาก Backend
+  socket.on("chat_reset_success", () => {
+      // เมื่อ Backend ลบ Redis ของ sid นี้เสร็จแล้ว 
+      // ให้ "ทำลายท่อเดิมทิ้ง" เพื่อหนีข้อความผีดิบที่อาจจะกำลังสตรีมมา
+      socket.disconnect();
+      
+      // หน่วงเวลาเล็กน้อยแล้วสร้างการเชื่อมต่อใหม่ (จะได้ sid ใหม่เอี่ยม)
+      setTimeout(() => {
+          socket.connect();
+          
+          // แสดงข้อความยืนยันหลังจากเชื่อมต่อใหม่สำเร็จ
+          appendMessage("🔄 ล้างประวัติและการจดจำของ AI เรียบร้อยแล้ว เริ่มต้นบทสนทนาใหม่ได้เลยครับ", "bot");
+      }, 500);
+  });
   // เริ่ม stream (AI กำลังเริ่มพิมพ์)
   socket.on("response_start", () => {
     if (ignoreStream) return; // <-- ดักไว้ ถ้าสั่งรีเซ็ตแล้ว ไม่ต้องทำงานต่อ
@@ -348,13 +361,11 @@
 
   // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
+      if (ignoreStream) return; // <-- ดักไว้ ถ้าสั่งรีเซ็ตแล้ว ไม่ต้องทำงานต่อ
       appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
       status.innerHTML = '';
   });
-  // รับข้อความยืนยันการล้างประวัติจาก Backend
-  socket.on("chat_reset_success", () => {
-      appendMessage("🔄 ล้างประวัติการสนทนาและการจดจำของ AI เรียบร้อยแล้ว เริ่มต้นบทสนทนาใหม่ได้เลยครับ", "bot");
-  });
+
   // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
   function appendMessage(text, sender) {
       const div = document.createElement('div');
