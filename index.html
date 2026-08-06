@@ -535,7 +535,7 @@
   const socket = io(CONFIG.API_URL, {
       transports: ["websocket", "polling"],
       auth: {
-          token: CONFIG.AUTH_TOKEN // 👈 เพิ่มบรรทัดนี้ ส่ง Token ที่ตั้งไว้ใน config.js ไปให้ Backend ตรวจสอบ 
+          token: CONFIG.AUTH_TOKEN // 👈 เพิ่มบรรทัดนี้ ส่ง Token ที่ตั้งไว้ใน config.js ไปให้ Backend ตรวจสอบ
       }
   });
 
