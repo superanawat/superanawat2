@@ -508,15 +508,21 @@
 
   <footer>
     <div class="links">
-      <a href="https://drive.google.com/file/d/1rq46jo8fQ7CBC7HyKmZlBDf9gZGallZD/view?usp=sharing" target="_blank">ℹ️ เกี่ยวกับโปรแกรม</a>
-      <a href="https://www.ocs.go.th/searchlaw" target="_blank">ศึกษาข้อมูลเพิ่มเติม</a>
+      <!-- ปรับแก้ข้อ 3: เพิ่ม rel="noopener noreferrer" ทุกลิงก์ที่มี target="_blank" -->
+      <a href="https://drive.google.com/file/d/1rq46jo8fQ7CBC7HyKmZlBDf9gZGallZD/view?usp=sharing" target="_blank" rel="noopener noreferrer">ℹ️ เกี่ยวกับโปรแกรม</a>
+      <a href="https://www.ocs.go.th/searchlaw" target="_blank" rel="noopener noreferrer">ศึกษาข้อมูลเพิ่มเติม</a>
     </div>
     <div class="devby">พัฒนาโดยทีม <strong>ICT4</strong></div>
   </footer>
 </div>
 
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<!-- ปรับแก้ข้อ 2: เพิ่ม integrity และ crossorigin ให้กับ CDN -->
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
+<!-- คงไฟล์ marked ไว้ตามคำสั่งเดิม หากในอนาคตมีการเรียกใช้เพิ่มเติม -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- ปรับแก้ข้อ 1: เพิ่ม Library DOMPurify สำหรับทำความสะอาด HTML -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
 <script src="./config.js"></script>
 
@@ -613,16 +619,21 @@
           currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
           chatBox.appendChild(currentBotDiv);
       }
-      currentBotDiv.querySelector('.message').innerHTML += data.text;
+      
+      // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize ข้อความก่อนใส่ลงใน HTML
+      let cleanText = DOMPurify.sanitize(data.text);
+      currentBotDiv.querySelector('.message').innerHTML += cleanText;
       chatBox.scrollTop = chatBox.scrollHeight;
   });
 
   // รับข้อความแจ้งสถานะการทำงานจาก Backend
   socket.on("response_status", (data) => {
       if (ignoreStream) return;
+      // ปรับแก้ข้อ 1: Sanitize ข้อความแจ้งสถานะเผื่อมีการโจมตี
+      let cleanStatusMsg = DOMPurify.sanitize(data.message);
       status.innerHTML = `
           <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#B8872E; font-weight:500;">${data.message}</span>
+              <span style="color:#B8872E; font-weight:500;">${cleanStatusMsg}</span>
               <div class="typing-indicator"><span></span><span></span><span></span></div>
           </div>
       `;
@@ -632,7 +643,9 @@
   socket.on("response_done", (data) => {
       if (ignoreStream) return;
       if (currentBotDiv) {
-          currentBotDiv.querySelector('.message').innerHTML = data.html;
+          // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize HTML ก้อนเต็มก่อนนำมาอัปเดตแทนที่
+          let cleanHTML = DOMPurify.sanitize(data.html);
+          currentBotDiv.querySelector('.message').innerHTML = cleanHTML;
       }
       status.innerHTML = '';
       chatBox.scrollTop = chatBox.scrollHeight;
@@ -653,8 +666,10 @@
 
       const bubble = document.createElement('div');
       bubble.className = 'message ' + sender;
+      
+      // ปรับแก้ข้อ 1: คลุมด้วย DOMPurify เสมอหากเป็นการเพิ่ม HTML ของบอทลงไป
       if (sender === 'bot') {
-          bubble.innerHTML = text;
+          bubble.innerHTML = DOMPurify.sanitize(text);
       } else {
           bubble.textContent = text;
       }
