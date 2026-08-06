@@ -4,6 +4,6 @@ const CONFIG = {
     // หมายเหตุ: ใช้ https:// และไม่ต้องมีเครื่องหมาย / ต่อท้าย
     API_URL: "https://tipped-roast-tamale.ngrok-free.dev",
     
-    // เพิ่ม Token สำหรับยืนยันตัวตน (ต้องตั้งให้ตรงกับฝั่ง Python)
+    // เพิ่ม Token สำหรับยืนยันตัวตน (ต้องตั้งให้ตรงกับฝั่ง Python) 
     AUTH_TOKEN: "BigBossBeBelleMayularTL"
 };
