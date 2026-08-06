@@ -531,9 +531,12 @@
   const status = document.getElementById('status');
   const emptyState = document.getElementById('emptyState');
 
-  // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
+// ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
   const socket = io(CONFIG.API_URL, {
-      transports: ["websocket", "polling"]
+      transports: ["websocket", "polling"],
+      auth: {
+          token: CONFIG.AUTH_TOKEN // 👈 เพิ่มบรรทัดนี้ ส่ง Token ที่ตั้งไว้ใน config.js ไปให้ Backend ตรวจสอบ
+      }
   });
 
   let currentBotDiv = null;
