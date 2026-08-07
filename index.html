@@ -8,512 +8,512 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink-900:#0F1B33;
-    --ink-800:#1C2E4F;
-    --ink-700:#2A3F63;
-    --ink-600:#3C5680;
-    --gold-600:#B8872E;
-    --gold-500:#C9973A;
-    --gold-300:#E4C382;
-    --gold-tint:#FBF3E2;
-    --seal-red:#8B2635;
-    --paper-100:#F5F1E7;
-    --paper-050:#FBF9F4;
-    --paper-000:#FFFFFF;
-    --line:#E4DDC9;
-    --line-soft:#EDE7D6;
-    --ink-text:#242B3B;
-    --ink-muted:#6B7280;
-    --shadow-lg: 0 24px 60px -20px rgba(15,27,51,0.35);
-    --shadow-sm: 0 2px 10px rgba(15,27,51,0.08);
-    --radius-lg: 18px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-  }
+  :root{
+    --ink-900:#0F1B33;
+    --ink-800:#1C2E4F;
+    --ink-700:#2A3F63;
+    --ink-600:#3C5680;
+    --gold-600:#B8872E;
+    --gold-500:#C9973A;
+    --gold-300:#E4C382;
+    --gold-tint:#FBF3E2;
+    --seal-red:#8B2635;
+    --paper-100:#F5F1E7;
+    --paper-050:#FBF9F4;
+    --paper-000:#FFFFFF;
+    --line:#E4DDC9;
+    --line-soft:#EDE7D6;
+    --ink-text:#242B3B;
+    --ink-muted:#6B7280;
+    --shadow-lg: 0 24px 60px -20px rgba(15,27,51,0.35);
+    --shadow-sm: 0 2px 10px rgba(15,27,51,0.08);
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+  }
 
-  *{ box-sizing:border-box; }
+  *{ box-sizing:border-box; }
 
-  html,body{
-    height:100%;
-    margin:0;
-  }
+  html,body{
+    height:100%;
+    margin:0;
+  }
 
-  body{
-    font-family:'Sarabun', sans-serif;
-    color:var(--ink-text);
-    background:
-      radial-gradient(circle at 12% 8%, rgba(184,135,46,0.08), transparent 40%),
-      radial-gradient(circle at 90% 90%, rgba(28,46,79,0.06), transparent 45%),
-      var(--paper-100);
-    min-height:100dvh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:28px 16px;
-  }
+  body{
+    font-family:'Sarabun', sans-serif;
+    color:var(--ink-text);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(184,135,46,0.08), transparent 40%),
+      radial-gradient(circle at 90% 90%, rgba(28,46,79,0.06), transparent 45%),
+      var(--paper-100);
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 16px;
+  }
 
-  /* ===== App shell ===== */
-  #appShell{
-    width:100%;
-    max-width:980px;
-    background:var(--paper-000);
-    border-radius:var(--radius-lg);
-    box-shadow:var(--shadow-lg);
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-    height:min(860px, calc(100dvh - 56px));
-    position:relative;
-    border:1px solid var(--line);
-  }
+  /* ===== App shell ===== */
+  #appShell{
+    width:100%;
+    max-width:980px;
+    background:var(--paper-000);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-lg);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    height:min(860px, calc(100dvh - 56px));
+    position:relative;
+    border:1px solid var(--line);
+  }
 
-  /* folder tab, signature element */
-  #folderTab{
-    position:absolute;
-    top:0;
-    left:32px;
-    transform:translateY(-100%);
-    background:var(--ink-800);
-    color:var(--gold-300);
-    font-size:12px;
-    letter-spacing:0.06em;
-    padding:7px 18px 10px;
-    border-radius:10px 10px 0 0;
-    font-weight:600;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    z-index:0;
-  }
-  #folderTab svg{ width:12px; height:12px; flex-shrink:0; }
+  /* folder tab, signature element */
+  #folderTab{
+    position:absolute;
+    top:0;
+    left:32px;
+    transform:translateY(-100%);
+    background:var(--ink-800);
+    color:var(--gold-300);
+    font-size:12px;
+    letter-spacing:0.06em;
+    padding:7px 18px 10px;
+    border-radius:10px 10px 0 0;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    z-index:0;
+  }
+  #folderTab svg{ width:12px; height:12px; flex-shrink:0; }
 
-  /* ===== Header ===== */
-  header{
-    background:
-      linear-gradient(135deg, var(--ink-900), var(--ink-800) 55%, var(--ink-700));
-    color:#fff;
-    padding:20px 24px;
-    display:flex;
-    align-items:center;
-    gap:16px;
-    position:relative;
-    z-index:1;
-    flex-shrink:0;
-  }
+  /* ===== Header ===== */
+  header{
+    background:
+      linear-gradient(135deg, var(--ink-900), var(--ink-800) 55%, var(--ink-700));
+    color:#fff;
+    padding:20px 24px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    position:relative;
+    z-index:1;
+    flex-shrink:0;
+  }
 
-  header::after{
-    content:"";
-    position:absolute;
-    left:0; right:0; bottom:-1px;
-    height:3px;
-    background:linear-gradient(90deg, var(--gold-600), var(--gold-300) 40%, transparent 80%);
-  }
+  header::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:3px;
+    background:linear-gradient(90deg, var(--gold-600), var(--gold-300) 40%, transparent 80%);
+  }
 
-  #sealMark{
-    width:52px;
-    height:52px;
-    border-radius:50%;
-    background:radial-gradient(circle at 32% 28%, var(--gold-300), var(--gold-600) 65%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35), 0 4px 10px rgba(0,0,0,0.25);
-    position:relative;
-    overflow:hidden;
-  }
-  #sealMark svg{ width:28px; height:28px; }
-  #robotImage{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    border-radius:50%;
-  }
+  #sealMark{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, var(--gold-300), var(--gold-600) 65%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35), 0 4px 10px rgba(0,0,0,0.25);
+    position:relative;
+    overflow:hidden;
+  }
+  #sealMark svg{ width:28px; height:28px; }
+  #robotImage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+  }
 
-  #headerText{ min-width:0; flex:1; }
-  #headerText h1{
-    font-family:'Noto Serif Thai', serif;
-    font-size:17px;
-    font-weight:600;
-    margin:0 0 2px;
-    line-height:1.4;
-  }
-  #headerText p{
-    margin:0;
-    font-size:12.5px;
-    color:var(--gold-300);
-    font-weight:400;
-    letter-spacing:0.02em;
-  }
+  #headerText{ min-width:0; flex:1; }
+  #headerText h1{
+    font-family:'Noto Serif Thai', serif;
+    font-size:17px;
+    font-weight:600;
+    margin:0 0 2px;
+    line-height:1.4;
+  }
+  #headerText p{
+    margin:0;
+    font-size:12.5px;
+    color:var(--gold-300);
+    font-weight:400;
+    letter-spacing:0.02em;
+  }
 
-  #headerActions{ display:flex; gap:8px; flex-shrink:0; }
-  #resetBtn{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    padding:8px 14px;
-    font-size:13px;
-    font-family:inherit;
-    font-weight:500;
-    border:1px solid rgba(255,255,255,0.25);
-    border-radius:999px;
-    background:rgba(255,255,255,0.06);
-    color:#F4E8CE;
-    cursor:pointer;
-    transition:background .15s ease, border-color .15s ease;
-    white-space:nowrap;
-  }
-  #resetBtn:hover{ background:rgba(139,38,53,0.55); border-color:var(--seal-red); }
-  #resetBtn svg{ width:14px; height:14px; }
+  #headerActions{ display:flex; gap:8px; flex-shrink:0; }
+  #resetBtn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 14px;
+    font-size:13px;
+    font-family:inherit;
+    font-weight:500;
+    border:1px solid rgba(255,255,255,0.25);
+    border-radius:999px;
+    background:rgba(255,255,255,0.06);
+    color:#F4E8CE;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+    white-space:nowrap;
+  }
+  #resetBtn:hover{ background:rgba(139,38,53,0.55); border-color:var(--seal-red); }
+  #resetBtn svg{ width:14px; height:14px; }
 
-  /* ===== Hint / quick-prompt strip ===== */
-  #hintStrip{
-    background:var(--gold-tint);
-    border-bottom:1px solid var(--line);
-    padding:10px 20px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    overflow-x:auto;
-    flex-shrink:0;
-    scrollbar-width:thin;
-  }
-  #hintStrip::-webkit-scrollbar{ height:4px; }
-  #hintStrip::-webkit-scrollbar-thumb{ background:var(--gold-300); border-radius:4px; }
+  /* ===== Hint / quick-prompt strip ===== */
+  #hintStrip{
+    background:var(--gold-tint);
+    border-bottom:1px solid var(--line);
+    padding:10px 20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    overflow-x:auto;
+    flex-shrink:0;
+    scrollbar-width:thin;
+  }
+  #hintStrip::-webkit-scrollbar{ height:4px; }
+  #hintStrip::-webkit-scrollbar-thumb{ background:var(--gold-300); border-radius:4px; }
 
-  #hintLabel{
-    font-size:12px;
-    color:var(--ink-700);
-    font-weight:600;
-    flex-shrink:0;
-    display:flex;
-    align-items:center;
-    gap:5px;
-  }
-  #hintLabel svg{ width:13px; height:13px; }
+  #hintLabel{
+    font-size:12px;
+    color:var(--ink-700);
+    font-weight:600;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+  #hintLabel svg{ width:13px; height:13px; }
 
-  .chip{
-    flex-shrink:0;
-    font-family:inherit;
-    font-size:12.5px;
-    color:var(--ink-800);
-    background:#fff;
-    border:1px solid var(--gold-300);
-    padding:6px 13px;
-    border-radius:999px;
-    cursor:pointer;
-    transition:transform .12s ease, background .12s ease, box-shadow .12s ease;
-  }
-  .chip:hover{ background:var(--ink-800); color:#fff; border-color:var(--ink-800); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+  .chip{
+    flex-shrink:0;
+    font-family:inherit;
+    font-size:12.5px;
+    color:var(--ink-800);
+    background:#fff;
+    border:1px solid var(--gold-300);
+    padding:6px 13px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:transform .12s ease, background .12s ease, box-shadow .12s ease;
+  }
+  .chip:hover{ background:var(--ink-800); color:#fff; border-color:var(--ink-800); transform:translateY(-1px); box-shadow:var(--shadow-sm); }
 
-  /* ===== Chat area ===== */
-  #chatBox{
-    flex:1;
-    overflow-y:auto;
-    padding:22px 22px 10px;
-    background:
-      repeating-linear-gradient(
-        to bottom,
-        transparent 0px, transparent 43px, var(--line-soft) 44px
-      ),
-      var(--paper-050);
-    scroll-behavior:smooth;
-  }
-  #chatBox::-webkit-scrollbar{ width:8px; }
-  #chatBox::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+  /* ===== Chat area ===== */
+  #chatBox{
+    flex:1;
+    overflow-y:auto;
+    padding:22px 22px 10px;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 43px, var(--line-soft) 44px
+      ),
+      var(--paper-050);
+    scroll-behavior:smooth;
+  }
+  #chatBox::-webkit-scrollbar{ width:8px; }
+  #chatBox::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
 
-  #emptyState{
-    max-width:420px;
-    margin:36px auto;
-    text-align:center;
-    color:var(--ink-muted);
-  }
-  #emptyState .icon{
-    width:58px; height:58px;
-    margin:0 auto 14px;
-    border-radius:50%;
-    background:var(--gold-tint);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--gold-600);
-  }
-  #emptyState .icon svg{ width:26px; height:26px; }
-  #emptyState h3{
-    font-family:'Noto Serif Thai', serif;
-    font-size:16px;
-    color:var(--ink-800);
-    margin:0 0 6px;
-    font-weight:600;
-  }
-  #emptyState p{ font-size:13.5px; line-height:1.7; margin:0; }
+  #emptyState{
+    max-width:420px;
+    margin:36px auto;
+    text-align:center;
+    color:var(--ink-muted);
+  }
+  #emptyState .icon{
+    width:58px; height:58px;
+    margin:0 auto 14px;
+    border-radius:50%;
+    background:var(--gold-tint);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--gold-600);
+  }
+  #emptyState .icon svg{ width:26px; height:26px; }
+  #emptyState h3{
+    font-family:'Noto Serif Thai', serif;
+    font-size:16px;
+    color:var(--ink-800);
+    margin:0 0 6px;
+    font-weight:600;
+  }
+  #emptyState p{ font-size:13.5px; line-height:1.7; margin:0; }
 
-  .row{
-    display:flex;
-    gap:10px;
-    margin:0 0 16px;
-    align-items:flex-end;
-    animation:riseIn .28s ease both;
-  }
-  @keyframes riseIn{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
-  .row.user{ flex-direction:row-reverse; }
+  .row{
+    display:flex;
+    gap:10px;
+    margin:0 0 16px;
+    align-items:flex-end;
+    animation:riseIn .28s ease both;
+  }
+  @keyframes riseIn{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
+  .row.user{ flex-direction:row-reverse; }
 
-  .avatar{
-    width:30px; height:30px;
-    border-radius:50%;
-    flex-shrink:0;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .row.bot .avatar{
-    background:radial-gradient(circle at 32% 28%, var(--gold-300), var(--gold-600) 70%);
-    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.4);
-  }
-  .row.bot .avatar svg{ width:15px; height:15px; color:#fff; }
-  .row.user .avatar{ display:none; }
+  .avatar{
+    width:30px; height:30px;
+    border-radius:50%;
+    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .row.bot .avatar{
+    background:radial-gradient(circle at 32% 28%, var(--gold-300), var(--gold-600) 70%);
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.4);
+  }
+  .row.bot .avatar svg{ width:15px; height:15px; color:#fff; }
+  .row.user .avatar{ display:none; }
 
-  .message{
-    padding:11px 16px;
-    border-radius:16px;
-    max-width:78%;
-    line-height:1.65;
-    font-size:14.5px;
-    word-wrap:break-word;
-    box-shadow:var(--shadow-sm);
-  }
-  .message.user{
-    background:var(--ink-800);
-    color:#fff;
-    border-bottom-right-radius:4px;
-  }
-  .message.bot{
-    background:#fff;
-    color:var(--ink-text);
-    border:1px solid var(--line);
-    border-bottom-left-radius:4px;
-  }
-  .message.bot :first-child{ margin-top:0; }
-  .message.bot :last-child{ margin-bottom:0; }
-  .message.bot a{ color:var(--ink-700); }
-  .message.bot table{ border-collapse:collapse; font-size:13.5px; }
-  .message.bot th, .message.bot td{ border:1px solid var(--line); padding:5px 9px; }
+  .message{
+    padding:11px 16px;
+    border-radius:16px;
+    max-width:78%;
+    line-height:1.65;
+    font-size:14.5px;
+    word-wrap:break-word;
+    box-shadow:var(--shadow-sm);
+  }
+  .message.user{
+    background:var(--ink-800);
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
+  .message.bot{
+    background:#fff;
+    color:var(--ink-text);
+    border:1px solid var(--line);
+    border-bottom-left-radius:4px;
+  }
+  .message.bot :first-child{ margin-top:0; }
+  .message.bot :last-child{ margin-bottom:0; }
+  .message.bot a{ color:var(--ink-700); }
+  .message.bot table{ border-collapse:collapse; font-size:13.5px; }
+  .message.bot th, .message.bot td{ border:1px solid var(--line); padding:5px 9px; }
 
-  /* ===== Status / typing ===== */
-  #statusWrap{
-    padding:0 22px;
-    min-height:26px;
-    flex-shrink:0;
-    background:var(--paper-050);
-  }
-  #status{
-    font-size:12.5px;
-    color:var(--ink-muted);
-  }
-  .typing-indicator{
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-  }
-  .typing-indicator span{
-    width:6px; height:6px;
-    background-color:var(--gold-600);
-    border-radius:50%;
-    animation:bounce 1.4s infinite ease-in-out both;
-  }
-  .typing-indicator span:nth-child(1){ animation-delay:-0.32s; }
-  .typing-indicator span:nth-child(2){ animation-delay:-0.16s; }
-  @keyframes bounce{ 0%,80%,100%{ transform:scale(0);} 40%{ transform:scale(1);} }
+  /* ===== Status / typing ===== */
+  #statusWrap{
+    padding:0 22px;
+    min-height:26px;
+    flex-shrink:0;
+    background:var(--paper-050);
+  }
+  #status{
+    font-size:12.5px;
+    color:var(--ink-muted);
+  }
+  .typing-indicator{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+  }
+  .typing-indicator span{
+    width:6px; height:6px;
+    background-color:var(--gold-600);
+    border-radius:50%;
+    animation:bounce 1.4s infinite ease-in-out both;
+  }
+  .typing-indicator span:nth-child(1){ animation-delay:-0.32s; }
+  .typing-indicator span:nth-child(2){ animation-delay:-0.16s; }
+  @keyframes bounce{ 0%,80%,100%{ transform:scale(0);} 40%{ transform:scale(1);} }
 
-  /* ===== Input dock ===== */
-  #inputDock{
-    padding:14px 18px calc(14px + env(safe-area-inset-bottom));
-    background:var(--paper-000);
-    border-top:1px solid var(--line);
-    flex-shrink:0;
-  }
-  #inputContainer{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    background:var(--paper-100);
-    border:1.5px solid var(--line);
-    border-radius:999px;
-    padding:6px 6px 6px 18px;
-    transition:border-color .15s ease, box-shadow .15s ease;
-  }
-  #inputContainer:focus-within{
-    border-color:var(--gold-500);
-    box-shadow:0 0 0 3px rgba(201,151,58,0.16);
-  }
+  /* ===== Input dock ===== */
+  #inputDock{
+    padding:14px 18px calc(14px + env(safe-area-inset-bottom));
+    background:var(--paper-000);
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+  }
+  #inputContainer{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--paper-100);
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    padding:6px 6px 6px 18px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  #inputContainer:focus-within{
+    border-color:var(--gold-500);
+    box-shadow:0 0 0 3px rgba(201,151,58,0.16);
+  }
 
-  #userInput{
-    flex:1;
-    min-width:0;
-    border:none;
-    background:transparent;
-    font-family:inherit;
-    font-size:15px;
-    color:var(--ink-text);
-    padding:8px 0;
-    outline:none;
-  }
-  #userInput::placeholder{ color:#9CA3AF; }
+  #userInput{
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    font-family:inherit;
+    font-size:15px;
+    color:var(--ink-text);
+    padding:8px 0;
+    outline:none;
+  }
+  #userInput::placeholder{ color:#9CA3AF; }
 
-  #micBtn, #sendBtn{
-    flex-shrink:0;
-    width:40px; height:40px;
-    border-radius:50%;
-    border:none;
-    cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    transition:background .15s ease, transform .1s ease;
-  }
-  #micBtn svg, #sendBtn svg{ width:18px; height:18px; }
-  #micBtn{ background:var(--paper-000); color:var(--ink-700); border:1px solid var(--line); }
-  #micBtn:hover{ background:var(--gold-tint); border-color:var(--gold-300); }
-  #micBtn.recording{ background:var(--seal-red); color:#fff; border-color:var(--seal-red); animation:pulse 1s infinite; }
-  @keyframes pulse{
-    0%{ box-shadow:0 0 0 0 rgba(139,38,53,0.55); }
-    70%{ box-shadow:0 0 0 9px rgba(139,38,53,0); }
-    100%{ box-shadow:0 0 0 0 rgba(139,38,53,0); }
-  }
-  #sendBtn{ background:var(--ink-800); color:#fff; }
-  #sendBtn:hover{ background:var(--ink-900); transform:scale(1.04); }
-  #sendBtn:active{ transform:scale(0.96); }
+  #micBtn, #sendBtn{
+    flex-shrink:0;
+    width:40px; height:40px;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, transform .1s ease;
+  }
+  #micBtn svg, #sendBtn svg{ width:18px; height:18px; }
+  #micBtn{ background:var(--paper-000); color:var(--ink-700); border:1px solid var(--line); }
+  #micBtn:hover{ background:var(--gold-tint); border-color:var(--gold-300); }
+  #micBtn.recording{ background:var(--seal-red); color:#fff; border-color:var(--seal-red); animation:pulse 1s infinite; }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(139,38,53,0.55); }
+    70%{ box-shadow:0 0 0 9px rgba(139,38,53,0); }
+    100%{ box-shadow:0 0 0 0 rgba(139,38,53,0); }
+  }
+  #sendBtn{ background:var(--ink-800); color:#fff; }
+  #sendBtn:hover{ background:var(--ink-900); transform:scale(1.04); }
+  #sendBtn:active{ transform:scale(0.96); }
 
-  #inputFootnote{
-    font-size:11px;
-    color:var(--ink-muted);
-    text-align:center;
-    margin:9px 0 0;
-  }
+  #inputFootnote{
+    font-size:11px;
+    color:var(--ink-muted);
+    text-align:center;
+    margin:9px 0 0;
+  }
 
-  /* ===== Footer ===== */
-  footer{
-    padding:12px 20px calc(12px + env(safe-area-inset-bottom));
-    background:var(--ink-900);
-    color:#B9C2D6;
-    font-size:11.5px;
-    text-align:center;
-    flex-shrink:0;
-  }
-  footer .links{
-    display:flex;
-    justify-content:center;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-bottom:8px;
-  }
-  footer a{
-    text-decoration:none;
-    color:var(--gold-300);
-    padding:5px 12px;
-    border-radius:999px;
-    border:1px solid rgba(228,195,130,0.35);
-    font-weight:500;
-    transition:background .15s ease;
-  }
-  footer a:hover{ background:rgba(228,195,130,0.12); }
-  footer .devby{ color:#7C87A0; }
-  footer .devby strong{ color:#B9C2D6; }
+  /* ===== Footer ===== */
+  footer{
+    padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+    background:var(--ink-900);
+    color:#B9C2D6;
+    font-size:11.5px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  footer .links{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+  footer a{
+    text-decoration:none;
+    color:var(--gold-300);
+    padding:5px 12px;
+    border-radius:999px;
+    border:1px solid rgba(228,195,130,0.35);
+    font-weight:500;
+    transition:background .15s ease;
+  }
+  footer a:hover{ background:rgba(228,195,130,0.12); }
+  footer .devby{ color:#7C87A0; }
+  footer .devby strong{ color:#B9C2D6; }
 
-  /* ===== Responsive ===== */
-  @media (max-width:640px){
-    body{ padding:0; align-items:stretch; }
-    #appShell{
-      height:100dvh;
-      max-width:100%;
-      border-radius:0;
-      border:none;
-    }
-    #folderTab{ display:none; }
-    header{ padding:14px 16px; }
-    #sealMark{ width:42px; height:42px; }
-    #sealMark svg{ width:22px; height:22px; }
-    #headerText h1{ font-size:14.5px; }
-    #headerText p{ font-size:11px; }
-    #resetBtn span.label{ display:none; }
-    #resetBtn{ padding:8px 10px; }
-    #chatBox{ padding:16px 14px 6px; }
-    .message{ max-width:86%; font-size:14px; }
-    #inputDock{ padding:10px 12px calc(10px + env(safe-area-inset-bottom)); }
-  }
+  /* ===== Responsive ===== */
+  @media (max-width:640px){
+    body{ padding:0; align-items:stretch; }
+    #appShell{
+      height:100dvh;
+      max-width:100%;
+      border-radius:0;
+      border:none;
+    }
+    #folderTab{ display:none; }
+    header{ padding:14px 16px; }
+    #sealMark{ width:42px; height:42px; }
+    #sealMark svg{ width:22px; height:22px; }
+    #headerText h1{ font-size:14.5px; }
+    #headerText p{ font-size:11px; }
+    #resetBtn span.label{ display:none; }
+    #resetBtn{ padding:8px 10px; }
+    #chatBox{ padding:16px 14px 6px; }
+    .message{ max-width:86%; font-size:14px; }
+    #inputDock{ padding:10px 12px calc(10px + env(safe-area-inset-bottom)); }
+  }
 
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
-  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
 </style>
 </head>
 <body>
 
 <div id="appShell">
-  <div id="folderTab">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M6 3v18M6 8h12M6 13h9"/></svg>
-    แฟ้มสืบค้นคำฟ้อง
-  </div>
+  <div id="folderTab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M6 3v18M6 8h12M6 13h9"/></svg>
+    แฟ้มสืบค้นคำฟ้อง
+  </div>
 
-  <header>
-    <div id="sealMark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#0F1B33" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/>
-        <path d="M5 7h14M4 21h16"/>
-      </svg>
-      <img id="robotImage" src="./ict4.gif" alt="" onerror="this.remove()">
-    </div>
-    <div id="headerText">
-      <h1>ผู้ช่วยสืบค้นร่างคำฟ้องคดีอาญา &amp; คำร้อง</h1>
-      <p>ระบบสืบค้นตัวอย่างร่างคำฟ้องและคำร้องต่างๆ ด้วย AI</p>
-    </div>
-    <div id="headerActions">
-      <button id="resetBtn" onclick="resetChat()" title="ล้างการสนทนา">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v6h-6"/></svg>
-        <span class="label">เริ่มบริบทใหม่</span>
-      </button>
-    </div>
-  </header>
+  <header>
+    <div id="sealMark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0F1B33" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/>
+        <path d="M5 7h14M4 21h16"/>
+      </svg>
+      <img id="robotImage" src="./ict4.gif" alt="" onerror="this.remove()">
+    </div>
+    <div id="headerText">
+      <h1>ผู้ช่วยสืบค้นร่างคำฟ้องคดีอาญา &amp; คำร้อง</h1>
+      <p>ระบบสืบค้นตัวอย่างร่างคำฟ้องและคำร้องต่างๆ ด้วย AI</p>
+    </div>
+    <div id="headerActions">
+      <button id="resetBtn" onclick="resetChat()" title="ล้างการสนทนา">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v6h-6"/></svg>
+        <span class="label">เริ่มบริบทใหม่</span>
+      </button>
+    </div>
+  </header>
 
-  <div id="hintStrip">
-    <span id="hintLabel">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      ลองถาม:
-    </span>
-    <button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องร่วมกันพาอาวุธมีดปลายแหลม</button>
-    <button class="chip" onclick="useHint(this)">ตัวอย่างคำร้องขอรับบุตรบุญธรรม</button>
-  </div>
+  <div id="hintStrip">
+    <span id="hintLabel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      ลองถาม:
+    </span>
+    <button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องร่วมกันพาอาวุธมีดปลายแหลม</button>
+    <button class="chip" onclick="useHint(this)">ตัวอย่างคำร้องขอรับบุตรบุญธรรม</button>
+  </div>
 
-  <div id="chatBox">
-    <div id="emptyState">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <h3>เริ่มต้นสืบค้น</h3>
-      <p>พิมพ์คำถามด้วยแป้นพิมพ์หรือไมโครโฟน เช่น ข้อมูลร่างคำฟ้องร่วมกันพาอาวุธมีดปลายแหลม ระบบจะแสดงข้อมูลที่เกี่ยวข้อง พร้อมแหล่งข้อมูลอ้างอิง หากเปลี่ยนบริบทคำถาม กดปุ่ม “เริ่มบริบทใหม่” ด้านบน</p>
-    </div>
-  </div>
+  <div id="chatBox">
+    <div id="emptyState">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h3>เริ่มต้นสืบค้น</h3>
+      <p>พิมพ์คำถามด้วยแป้นพิมพ์หรือไมโครโฟน เช่น ข้อมูลร่างคำฟ้องร่วมกันพาอาวุธมีดปลายแหลม ระบบจะแสดงข้อมูลที่เกี่ยวข้อง พร้อมแหล่งข้อมูลอ้างอิง หากเปลี่ยนบริบทคำถาม กดปุ่ม “เริ่มบริบทใหม่” ด้านบน</p>
+    </div>
+  </div>
 
-  <div id="statusWrap"><div id="status"></div></div>
+  <div id="statusWrap"><div id="status"></div></div>
 
-  <div id="inputDock">
-    <div id="inputContainer">
-      <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ เช่น ข้อมูลร่างคำฟ้อง..." />
-      <button id="micBtn" onclick="toggleVoiceInput()" title="พูดเพื่อพิมพ์">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
-      </button>
-      <button id="sendBtn" onclick="sendMessage()" title="ส่งข้อความ">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
-      </button>
-    </div>
-    <p id="inputFootnote">🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง</p>
-  </div>
+  <div id="inputDock">
+    <div id="inputContainer">
+      <input type="text" id="userInput" placeholder="พิมพ์คำถามของคุณ เช่น ข้อมูลร่างคำฟ้อง..." />
+      <button id="micBtn" onclick="toggleVoiceInput()" title="พูดเพื่อพิมพ์">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+      </button>
+      <button id="sendBtn" onclick="sendMessage()" title="ส่งข้อความ">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+      </button>
+    </div>
+    <p id="inputFootnote">🚧 อยู่ระหว่างการพัฒนา กรุณาตรวจสอบข้อมูลอีกครั้งเพื่อความถูกต้อง</p>
+  </div>
 
-  <footer>
-    <div class="links">
-      <!-- ปรับแก้ข้อ 3: เพิ่ม rel="noopener noreferrer" ทุกลิงก์ที่มี target="_blank" -->
-      <a href="https://drive.google.com/file/d/1rq46jo8fQ7CBC7HyKmZlBDf9gZGallZD/view?usp=sharing" target="_blank" rel="noopener noreferrer">ℹ️ เกี่ยวกับโปรแกรม</a>
-      <a href="https://www.ocs.go.th/searchlaw" target="_blank" rel="noopener noreferrer">ศึกษาข้อมูลเพิ่มเติม</a>
-    </div>
-    <div class="devby">พัฒนาโดยทีม <strong>ICT4</strong></div>
-  </footer>
+  <footer>
+    <div class="links">
+      <!-- ปรับแก้ข้อ 3: เพิ่ม rel="noopener noreferrer" ทุกลิงก์ที่มี target="_blank" -->
+      <a href="https://drive.google.com/file/d/1rq46jo8fQ7CBC7HyKmZlBDf9gZGallZD/view?usp=sharing" target="_blank" rel="noopener noreferrer">ℹ️ เกี่ยวกับโปรแกรม</a>
+      <a href="https://www.ocs.go.th/searchlaw" target="_blank" rel="noopener noreferrer">ศึกษาข้อมูลเพิ่มเติม</a>
+    </div>
+    <div class="devby">พัฒนาโดยทีม <strong>ICT4</strong></div>
+  </footer>
 </div>
 
 <!-- ปรับแก้ข้อ 2: เพิ่ม integrity และ crossorigin ให้กับ CDN -->
@@ -527,231 +527,231 @@
 <script src="./config.js"></script>
 
 <script>
-  const chatBox = document.getElementById('chatBox');
-  const status = document.getElementById('status');
-  const emptyState = document.getElementById('emptyState');
+  const chatBox = document.getElementById('chatBox');
+  const status = document.getElementById('status');
+  const emptyState = document.getElementById('emptyState');
 
 // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
-  const socket = io(CONFIG.API_URL, {
-      transports: ["websocket", "polling"],
-      auth: { token: CONFIG.AUTH_TOKEN }
-  });
+  const socket = io(CONFIG.API_URL, {
+      transports: ["websocket", "polling"],
+      auth: { token: CONFIG.AUTH_TOKEN }
+  });
 
-  let currentBotDiv = null;
-  let ignoreStream = false; // เช็คว่าเพิ่งกดรีเซ็ตไปหรือไม่
+  let currentBotDiv = null;
+  let ignoreStream = false; // เช็คว่าเพิ่งกดรีเซ็ตไปหรือไม่
 
-  socket.on("connect", () => {
-      console.log("Connected to Backend successfully:", socket.id);
-  });
+  socket.on("connect", () => {
+      console.log("Connected to Backend successfully:", socket.id);
+  });
 
-  socket.on("connect_error", (error) => {
-      console.error("Connection Error:", error);
-      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
-  });
+  socket.on("connect_error", (error) => {
+      console.error("Connection Error:", error);
+      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
+  });
 
-  socket.on("disconnect", () => {
-      console.log("Disconnected");
-  });
+  socket.on("disconnect", () => {
+      console.log("Disconnected");
+  });
 
-  function hideEmptyState(){
-      if (emptyState && emptyState.parentNode) emptyState.remove();
-  }
+  function hideEmptyState(){
+      if (emptyState && emptyState.parentNode) emptyState.remove();
+  }
 
-  function useHint(el){
-      document.getElementById('userInput').value = el.textContent.trim();
-      document.getElementById('userInput').focus();
-  }
+  function useHint(el){
+      document.getElementById('userInput').value = el.textContent.trim();
+      document.getElementById('userInput').focus();
+  }
 
-  function sendMessage() {
-      const input = document.getElementById('userInput');
-      const message = input.value.trim();
+  function sendMessage() {
+      const input = document.getElementById('userInput');
+      const message = input.value.trim();
 
-      if (!message) return;
+      if (!message) return;
 
-      hideEmptyState();
-      appendMessage(message, 'user');
-      input.value = '';
-      status.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
-      currentBotDiv = null;
-      ignoreStream = false; // อนุญาตให้รับข้อความจากบอทได้ตามปกติ
+      hideEmptyState();
+      appendMessage(message, 'user');
+      input.value = '';
+      status.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+      currentBotDiv = null;
+      ignoreStream = false; // อนุญาตให้รับข้อความจากบอทได้ตามปกติ
 
-      // ส่งข้อความไป Flask SocketIO
-      socket.emit("peopleChat", message);
-  }
+      // ส่งข้อความไป Flask SocketIO
+      socket.emit("peopleChat", message);
+  }
 
-  // เคลียร์หน้าจอแชท
-  function resetChat() {
-      if (confirm("คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?")) {
-          chatBox.innerHTML = ''; // ล้างข้อความทั้งหมดในกล่องแชท
-          status.innerHTML = '';  // ล้างสถานะการทำงาน
-          document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
-          currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
-          ignoreStream = true; // ยกธงดักข้อความผีดิบทันทีที่กดตกลง
-          socket.emit("reset_chat");
-      }
-  }
+  // เคลียร์หน้าจอแชท
+  function resetChat() {
+      if (confirm("คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?")) {
+          chatBox.innerHTML = ''; // ล้างข้อความทั้งหมดในกล่องแชท
+          status.innerHTML = '';  // ล้างสถานะการทำงาน
+          document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
+          currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
+          ignoreStream = true; // ยกธงดักข้อความผีดิบทันทีที่กดตกลง
+          socket.emit("reset_chat");
+      }
+  }
 
-  // เมื่อ Backend ลบ Redis ของ sid นี้เสร็จแล้ว
-  socket.on("chat_reset_success", () => {
-      socket.disconnect();
+  // เมื่อ Backend ลบ Redis ของ sid นี้เสร็จแล้ว
+  socket.on("chat_reset_success", () => {
+      socket.disconnect();
 
-      setTimeout(() => {
-          socket.connect();
-          appendMessage("🔄 ล้างประวัติและการจดจำของ AI เรียบร้อยแล้ว เริ่มต้นบทสนทนาใหม่ได้เลยครับ", "bot");
-      }, 500);
-  });
+      setTimeout(() => {
+          socket.connect();
+          appendMessage("🔄 ล้างประวัติและการจดจำของ AI เรียบร้อยแล้ว เริ่มต้นบทสนทนาใหม่ได้เลยครับ", "bot");
+      }, 500);
+  });
 
-  // เริ่ม stream (AI กำลังเริ่มพิมพ์)
-  socket.on("response_start", () => {
-    if (ignoreStream) return;
-      currentBotDiv = document.createElement('div');
-      currentBotDiv.className = 'row bot';
-      currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
-      chatBox.appendChild(currentBotDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-  });
+  // เริ่ม stream (AI กำลังเริ่มพิมพ์)
+  socket.on("response_start", () => {
+    if (ignoreStream) return;
+      currentBotDiv = document.createElement('div');
+      currentBotDiv.className = 'row bot';
+      currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
+      chatBox.appendChild(currentBotDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+  });
 
-  // รับข้อความทีละ chunk (Streaming)
-  socket.on("response_stream", (data) => {
-      if (ignoreStream) return;
-      if (!currentBotDiv) {
-          currentBotDiv = document.createElement('div');
-          currentBotDiv.className = 'row bot';
-          currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
-          chatBox.appendChild(currentBotDiv);
-      }
-      
-      // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize ข้อความก่อนใส่ลงใน HTML
-      let cleanText = DOMPurify.sanitize(data.text);
-      currentBotDiv.querySelector('.message').innerHTML += cleanText;
-      chatBox.scrollTop = chatBox.scrollHeight;
-  });
+  // รับข้อความทีละ chunk (Streaming)
+  socket.on("response_stream", (data) => {
+      if (ignoreStream) return;
+      if (!currentBotDiv) {
+          currentBotDiv = document.createElement('div');
+          currentBotDiv.className = 'row bot';
+          currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
+          chatBox.appendChild(currentBotDiv);
+      }
+      
+      // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize ข้อความก่อนใส่ลงใน HTML
+      let cleanText = DOMPurify.sanitize(data.text);
+      currentBotDiv.querySelector('.message').innerHTML += cleanText;
+      chatBox.scrollTop = chatBox.scrollHeight;
+  });
 
-  // รับข้อความแจ้งสถานะการทำงานจาก Backend
-  socket.on("response_status", (data) => {
-      if (ignoreStream) return;
-      // ปรับแก้ข้อ 1: Sanitize ข้อความแจ้งสถานะเผื่อมีการโจมตี
-      let cleanStatusMsg = DOMPurify.sanitize(data.message);
-      status.innerHTML = `
-          <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#B8872E; font-weight:500;">${cleanStatusMsg}</span>
-              <div class="typing-indicator"><span></span><span></span><span></span></div>
-          </div>
-      `;
-  });
+  // รับข้อความแจ้งสถานะการทำงานจาก Backend
+  socket.on("response_status", (data) => {
+      if (ignoreStream) return;
+      // ปรับแก้ข้อ 1: Sanitize ข้อความแจ้งสถานะเผื่อมีการโจมตี
+      let cleanStatusMsg = DOMPurify.sanitize(data.message);
+      status.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px;">
+              <span style="color:#B8872E; font-weight:500;">${cleanStatusMsg}</span>
+              <div class="typing-indicator"><span></span><span></span><span></span></div>
+          </div>
+      `;
+  });
 
-  // จบ stream
-  socket.on("response_done", (data) => {
-      if (ignoreStream) return;
-      if (currentBotDiv) {
-          // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize HTML ก้อนเต็มก่อนนำมาอัปเดตแทนที่
-          let cleanHTML = DOMPurify.sanitize(data.html);
-          currentBotDiv.querySelector('.message').innerHTML = cleanHTML;
-      }
-      status.innerHTML = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
-  });
+  // จบ stream
+  socket.on("response_done", (data) => {
+      if (ignoreStream) return;
+      if (currentBotDiv) {
+          // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize HTML ก้อนเต็มก่อนนำมาอัปเดตแทนที่
+          let cleanHTML = DOMPurify.sanitize(data.html);
+          currentBotDiv.querySelector('.message').innerHTML = cleanHTML;
+      }
+      status.innerHTML = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+  });
 
-  // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
-  socket.on("response_error", (data) => {
-      if (ignoreStream) return;
-      appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
-      status.innerHTML = '';
-  });
+  // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
+  socket.on("response_error", (data) => {
+      if (ignoreStream) return;
+      appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
+      status.innerHTML = '';
+  });
 
-  // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
-  function appendMessage(text, sender) {
-      hideEmptyState();
-      const row = document.createElement('div');
-      row.className = 'row ' + sender;
+  // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
+  function appendMessage(text, sender) {
+      hideEmptyState();
+      const row = document.createElement('div');
+      row.className = 'row ' + sender;
 
-      const bubble = document.createElement('div');
-      bubble.className = 'message ' + sender;
-      
-      // ปรับแก้ข้อ 1: คลุมด้วย DOMPurify เสมอหากเป็นการเพิ่ม HTML ของบอทลงไป
-      if (sender === 'bot') {
-          bubble.innerHTML = DOMPurify.sanitize(text);
-      } else {
-          bubble.textContent = text;
-      }
+      const bubble = document.createElement('div');
+      bubble.className = 'message ' + sender;
+      
+      // ปรับแก้ข้อ 1: คลุมด้วย DOMPurify เสมอหากเป็นการเพิ่ม HTML ของบอทลงไป
+      if (sender === 'bot') {
+          bubble.innerHTML = DOMPurify.sanitize(text);
+      } else {
+          bubble.textContent = text;
+      }
 
-      if (sender === 'bot') {
-          const avatar = document.createElement('div');
-          avatar.className = 'avatar';
-          avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg>';
-          row.appendChild(avatar);
-      }
-      row.appendChild(bubble);
+      if (sender === 'bot') {
+          const avatar = document.createElement('div');
+          avatar.className = 'avatar';
+          avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg>';
+          row.appendChild(avatar);
+      }
+      row.appendChild(bubble);
 
-      chatBox.appendChild(row);
-      chatBox.scrollTop = chatBox.scrollHeight;
-  }
+      chatBox.appendChild(row);
+      chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-  // กด Enter เพื่อส่งข้อความ
-  document.getElementById('userInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-          sendMessage();
-      }
-  });
+  // กด Enter เพื่อส่งข้อความ
+  document.getElementById('userInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+          sendMessage();
+      }
+  });
 
-  // ===== ฟีเจอร์พิมพ์ด้วยเสียง (Web Speech API) =====
-  const micBtn = document.getElementById('micBtn');
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition = null;
-  let isRecording = false;
+  // ===== ฟีเจอร์พิมพ์ด้วยเสียง (Web Speech API) =====
+  const micBtn = document.getElementById('micBtn');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  let isRecording = false;
 
-  if (SpeechRecognition) {
-      recognition = new SpeechRecognition();
-      recognition.lang = 'th-TH';
-      recognition.continuous = false;
-      recognition.interimResults = true;
+  if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = 'th-TH';
+      recognition.continuous = false;
+      recognition.interimResults = true;
 
-      recognition.onstart = () => {
-          isRecording = true;
-          micBtn.classList.add('recording');
-          status.textContent = '🎙️ กำลังฟัง... พูดได้เลย';
-      };
+      recognition.onstart = () => {
+          isRecording = true;
+          micBtn.classList.add('recording');
+          status.textContent = '🎙️ กำลังฟัง... พูดได้เลย';
+      };
 
-      recognition.onresult = (event) => {
-          let transcript = '';
-          for (let i = 0; i < event.results.length; i++) {
-              transcript += event.results[i][0].transcript;
-          }
-          document.getElementById('userInput').value = transcript;
-      };
+      recognition.onresult = (event) => {
+          let transcript = '';
+          for (let i = 0; i < event.results.length; i++) {
+              transcript += event.results[i][0].transcript;
+          }
+          document.getElementById('userInput').value = transcript;
+      };
 
-      recognition.onerror = (event) => {
-          console.error('Speech recognition error:', event.error);
-          if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-              status.textContent = '⚠️ กรุณาอนุญาตให้ใช้ไมโครโฟน';
-          } else if (event.error === 'no-speech') {
-              status.textContent = '⚠️ ไม่ได้ยินเสียงพูด ลองใหม่อีกครั้ง';
-          } else {
-              status.textContent = '⚠️ เกิดข้อผิดพลาดในการรับเสียง';
-          }
-      };
+      recognition.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+          if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+              status.textContent = '⚠️ กรุณาอนุญาตให้ใช้ไมโครโฟน';
+          } else if (event.error === 'no-speech') {
+              status.textContent = '⚠️ ไม่ได้ยินเสียงพูด ลองใหม่อีกครั้ง';
+          } else {
+              status.textContent = '⚠️ เกิดข้อผิดพลาดในการรับเสียง';
+          }
+      };
 
-      recognition.onend = () => {
-          isRecording = false;
-          micBtn.classList.remove('recording');
-          if (status.textContent.includes('กำลังฟัง')) {
-              status.textContent = '';
-          }
-      };
-  } else {
-      micBtn.style.display = 'none';
-      console.warn('เบราว์เซอร์นี้ไม่รองรับ Web Speech API');
-  }
+      recognition.onend = () => {
+          isRecording = false;
+          micBtn.classList.remove('recording');
+          if (status.textContent.includes('กำลังฟัง')) {
+              status.textContent = '';
+          }
+      };
+  } else {
+      micBtn.style.display = 'none';
+      console.warn('เบราว์เซอร์นี้ไม่รองรับ Web Speech API');
+  }
 
-  function toggleVoiceInput() {
-      if (!recognition) return;
-      if (isRecording) {
-          recognition.stop();
-      } else {
-          document.getElementById('userInput').value = '';
-          recognition.start();
-      }
-  }
+  function toggleVoiceInput() {
+      if (!recognition) return;
+      if (isRecording) {
+          recognition.stop();
+      } else {
+          document.getElementById('userInput').value = '';
+          recognition.start();
+      }
+  }
 </script>
 
 </body>
