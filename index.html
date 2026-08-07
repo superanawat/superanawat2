@@ -508,7 +508,6 @@
 
   <footer>
     <div class="links">
-      <!-- ปรับแก้ข้อ 3: เพิ่ม rel="noopener noreferrer" ทุกลิงก์ที่มี target="_blank" -->
       <a href="https://drive.google.com/file/d/1rq46jo8fQ7CBC7HyKmZlBDf9gZGallZD/view?usp=sharing" target="_blank" rel="noopener noreferrer">ℹ️ เกี่ยวกับโปรแกรม</a>
       <a href="https://www.ocs.go.th/searchlaw" target="_blank" rel="noopener noreferrer">ศึกษาข้อมูลเพิ่มเติม</a>
     </div>
@@ -516,14 +515,10 @@
   </footer>
 </div>
 
-<!-- ปรับแก้ข้อ 2: เพิ่ม integrity และ crossorigin ให้กับ CDN -->
+<!-- Scripts -->
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
-<!-- คงไฟล์ marked ไว้ตามคำสั่งเดิม หากในอนาคตมีการเรียกใช้เพิ่มเติม -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-<!-- ปรับแก้ข้อ 1: เพิ่ม Library DOMPurify สำหรับทำความสะอาด HTML -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-
 <script src="./config.js"></script>
 
 <script>
@@ -531,27 +526,115 @@
   const status = document.getElementById('status');
   const emptyState = document.getElementById('emptyState');
 
-// ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
-  const socket = io(CONFIG.API_URL, {
-      transports: ["websocket", "polling"],
-      auth: { token: CONFIG.AUTH_TOKEN }
-  });
-
+  let socket;
   let currentBotDiv = null;
   let ignoreStream = false; // เช็คว่าเพิ่งกดรีเซ็ตไปหรือไม่
 
-  socket.on("connect", () => {
-      console.log("Connected to Backend successfully:", socket.id);
-  });
+  // ฟังก์ชันขอ Token และเริ่มต้นเชื่อมต่อ Socket แบบ Dynamic
+  async function initConnection() {
+      try {
+          // 1. ไปขอ Token จาก Server ก่อน
+          const response = await fetch(`${CONFIG.API_URL}/api/request-token`, { method: 'POST' });
+          const data = await response.json();
 
-  socket.on("connect_error", (error) => {
-      console.error("Connection Error:", error);
-      status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
-  });
+          // 2. นำ Token ที่ได้มาเชื่อมต่อ Socket
+          socket = io(CONFIG.API_URL, {
+              transports: ["websocket", "polling"],
+              auth: { token: data.token }
+          });
 
-  socket.on("disconnect", () => {
-      console.log("Disconnected");
-  });
+          // 3. กำหนด Event Listener ต่างๆ
+          setupSocketEvents();
+
+      } catch (err) {
+          console.error("ไม่สามารถเชื่อมต่อได้:", err);
+          status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [Token Request Failed]';
+      }
+  }
+
+  function setupSocketEvents() {
+      socket.on("connect", () => {
+          console.log("Connected to Backend successfully:", socket.id);
+      });
+
+      socket.on("connect_error", (error) => {
+          console.error("Connection Error:", error);
+          status.textContent = 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ [อยู่ระหว่างการปรับปรุง]';
+      });
+
+      socket.on("disconnect", () => {
+          console.log("Disconnected");
+      });
+
+      // เริ่ม stream (AI กำลังเริ่มพิมพ์)
+      socket.on("response_start", () => {
+          if (ignoreStream) return;
+          currentBotDiv = document.createElement('div');
+          currentBotDiv.className = 'row bot';
+          currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
+          chatBox.appendChild(currentBotDiv);
+          chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
+      // รับข้อความทีละ chunk (Streaming)
+      socket.on("response_stream", (data) => {
+          if (ignoreStream) return;
+          if (!currentBotDiv) {
+              currentBotDiv = document.createElement('div');
+              currentBotDiv.className = 'row bot';
+              currentBotDiv.className = 'row bot';
+              currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
+              chatBox.appendChild(currentBotDiv);
+          }
+          
+          let cleanText = DOMPurify.sanitize(data.text);
+          currentBotDiv.querySelector('.message').innerHTML += cleanText;
+          chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
+      // รับข้อความแจ้งสถานะการทำงานจาก Backend
+      socket.on("response_status", (data) => {
+          if (ignoreStream) return;
+          let cleanStatusMsg = DOMPurify.sanitize(data.message);
+          status.innerHTML = `
+              <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="color:#B8872E; font-weight:500;">${cleanStatusMsg}</span>
+                  <div class="typing-indicator"><span></span><span></span><span></span></div>
+              </div>
+          `;
+      });
+
+      // จบ stream
+      socket.on("response_done", (data) => {
+          if (ignoreStream) return;
+          if (currentBotDiv) {
+              let cleanHTML = DOMPurify.sanitize(data.html);
+              currentBotDiv.querySelector('.message').innerHTML = cleanHTML;
+          }
+          status.innerHTML = '';
+          chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
+      // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
+      socket.on("response_error", (data) => {
+          if (ignoreStream) return;
+          appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
+          status.innerHTML = '';
+      });
+
+      // เมื่อ Backend ลบ Redis ของ sid นี้เสร็จแล้ว
+      socket.on("chat_reset_success", () => {
+          socket.disconnect();
+
+          setTimeout(() => {
+              initConnection();
+              appendMessage("🔄 ล้างประวัติและการจดจำของ AI เรียบร้อยแล้ว เริ่มต้นบทสนทนาใหม่ได้เลยครับ", "bot");
+          }, 500);
+      });
+  }
+
+  // เรียกเริ่มการเชื่อมต่อครั้งแรก
+  initConnection();
 
   function hideEmptyState(){
       if (emptyState && emptyState.parentNode) emptyState.remove();
@@ -567,6 +650,10 @@
       const message = input.value.trim();
 
       if (!message) return;
+      if (!socket || !socket.connected) {
+          alert("ยังไม่ได้เชื่อมต่อกับเซิร์ฟเวอร์ กรุณารอสักครู่");
+          return;
+      }
 
       hideEmptyState();
       appendMessage(message, 'user');
@@ -586,78 +673,12 @@
           status.innerHTML = '';  // ล้างสถานะการทำงาน
           document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
           currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
-          ignoreStream = true; // ยกธงดักข้อความผีดิบทันทีที่กดตกลง
-          socket.emit("reset_chat");
+          ignoreStream = true; // ยกธงดักข้อความทันทีที่กดตกลง
+          if (socket && socket.connected) {
+              socket.emit("reset_chat");
+          }
       }
   }
-
-  // เมื่อ Backend ลบ Redis ของ sid นี้เสร็จแล้ว
-  socket.on("chat_reset_success", () => {
-      socket.disconnect();
-
-      setTimeout(() => {
-          socket.connect();
-          appendMessage("🔄 ล้างประวัติและการจดจำของ AI เรียบร้อยแล้ว เริ่มต้นบทสนทนาใหม่ได้เลยครับ", "bot");
-      }, 500);
-  });
-
-  // เริ่ม stream (AI กำลังเริ่มพิมพ์)
-  socket.on("response_start", () => {
-    if (ignoreStream) return;
-      currentBotDiv = document.createElement('div');
-      currentBotDiv.className = 'row bot';
-      currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
-      chatBox.appendChild(currentBotDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-  });
-
-  // รับข้อความทีละ chunk (Streaming)
-  socket.on("response_stream", (data) => {
-      if (ignoreStream) return;
-      if (!currentBotDiv) {
-          currentBotDiv = document.createElement('div');
-          currentBotDiv.className = 'row bot';
-          currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
-          chatBox.appendChild(currentBotDiv);
-      }
-      
-      // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize ข้อความก่อนใส่ลงใน HTML
-      let cleanText = DOMPurify.sanitize(data.text);
-      currentBotDiv.querySelector('.message').innerHTML += cleanText;
-      chatBox.scrollTop = chatBox.scrollHeight;
-  });
-
-  // รับข้อความแจ้งสถานะการทำงานจาก Backend
-  socket.on("response_status", (data) => {
-      if (ignoreStream) return;
-      // ปรับแก้ข้อ 1: Sanitize ข้อความแจ้งสถานะเผื่อมีการโจมตี
-      let cleanStatusMsg = DOMPurify.sanitize(data.message);
-      status.innerHTML = `
-          <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#B8872E; font-weight:500;">${cleanStatusMsg}</span>
-              <div class="typing-indicator"><span></span><span></span><span></span></div>
-          </div>
-      `;
-  });
-
-  // จบ stream
-  socket.on("response_done", (data) => {
-      if (ignoreStream) return;
-      if (currentBotDiv) {
-          // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize HTML ก้อนเต็มก่อนนำมาอัปเดตแทนที่
-          let cleanHTML = DOMPurify.sanitize(data.html);
-          currentBotDiv.querySelector('.message').innerHTML = cleanHTML;
-      }
-      status.innerHTML = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
-  });
-
-  // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
-  socket.on("response_error", (data) => {
-      if (ignoreStream) return;
-      appendMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือระบบหลังบ้านขัดข้อง ⚠️", "bot");
-      status.innerHTML = '';
-  });
 
   // ฟังก์ชันช่วยเหลือสำหรับสร้างกล่องข้อความ
   function appendMessage(text, sender) {
@@ -668,7 +689,6 @@
       const bubble = document.createElement('div');
       bubble.className = 'message ' + sender;
       
-      // ปรับแก้ข้อ 1: คลุมด้วย DOMPurify เสมอหากเป็นการเพิ่ม HTML ของบอทลงไป
       if (sender === 'bot') {
           bubble.innerHTML = DOMPurify.sanitize(text);
       } else {
