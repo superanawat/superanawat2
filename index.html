@@ -531,6 +531,20 @@
   const status = document.getElementById('status');
   const emptyState = document.getElementById('emptyState');
 
+  // ===== client_id ถาวร (แก้ปัญหาแชทต่อเนื่องหลุดตอน Socket.IO reconnect ได้ sid ใหม่) =====
+  // สร้างครั้งเดียวต่อแท็บ/เซสชันการเปิดหน้านี้ เก็บใน sessionStorage เพื่อให้อยู่รอดการ
+  // reconnect ของ socket (ซึ่งได้ sid ใหม่ทุกครั้งที่หลุด-ต่อใหม่) แต่จะรีเซ็ตเองถ้าปิดแท็บ/
+  // เปิดหน้าใหม่ (ตั้งใจให้เริ่มบทสนทนาใหม่ในกรณีนั้น)
+  function getClientId() {
+      let id = sessionStorage.getItem("sarabot_client_id");
+      if (!id) {
+          id = crypto.randomUUID();
+          sessionStorage.setItem("sarabot_client_id", id);
+      }
+      return id;
+  }
+  const CLIENT_ID = getClientId();
+
 // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
   const socket = io(CONFIG.API_URL, {
       transports: ["websocket", "polling"],
@@ -575,8 +589,9 @@
       currentBotDiv = null;
       ignoreStream = false; // อนุญาตให้รับข้อความจากบอทได้ตามปกติ
 
-      // ส่งข้อความไป Flask SocketIO
-      socket.emit("peopleChat", message);
+      // ส่งข้อความไป Flask SocketIO พร้อม client_id ถาวร (แทนการส่ง string เดี่ยวๆ แบบเดิม)
+      // เพื่อให้ backend เก็บประวัติแชทผูกกับ "ผู้ใช้คนนี้" แทน "connection ครั้งนี้"
+      socket.emit("peopleChat", { message: message, client_id: CLIENT_ID });
   }
 
   // เคลียร์หน้าจอแชท
@@ -587,11 +602,11 @@
           document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
           currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
           ignoreStream = true; // ยกธงดักข้อความผีดิบทันทีที่กดตกลง
-          socket.emit("reset_chat");
+          socket.emit("reset_chat", { client_id: CLIENT_ID });
       }
   }
 
-  // เมื่อ Backend ลบ Redis ของ sid นี้เสร็จแล้ว
+  // เมื่อ Backend ลบ Redis ของ client_id นี้เสร็จแล้ว
   socket.on("chat_reset_success", () => {
       socket.disconnect();
 
@@ -678,7 +693,7 @@
       if (sender === 'bot') {
           const avatar = document.createElement('div');
           avatar.className = 'avatar';
-          avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg>';
+          avatar.innerHTML = '<svg viewBox="0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg>';
           row.appendChild(avatar);
       }
       row.appendChild(bubble);
