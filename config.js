@@ -5,5 +5,5 @@ const CONFIG = {
     API_URL: "https://tipped-roast-tamale.ngrok-free.dev"//,
     
     // เพิ่ม Token สำหรับยืนยันตัวตน (ต้องตั้งให้ตรงกับฝั่ง Python)
-    //AUTH_TOKEN: "BigBossBeBelleMayularTL"
+    //AUTH_TOKEN: "0fe2b3fc727fb3c54845208dae43191a129d0213ad885dd6ee820aac07d3c8ed"
 };
