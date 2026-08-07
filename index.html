@@ -533,7 +533,8 @@
 
 // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
   const socket = io(CONFIG.API_URL, {
-      transports: ["websocket", "polling"]
+      transports: ["websocket", "polling"],
+      auth: { token: CONFIG.AUTH_TOKEN }
   });
 
   let currentBotDiv = null;
