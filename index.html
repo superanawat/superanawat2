@@ -298,6 +298,61 @@
   .message.bot table{ border-collapse:collapse; font-size:13.5px; }
   .message.bot th, .message.bot td{ border:1px solid var(--line); padding:5px 9px; }
 
+  /* ===== Reference source download links (เพิ่มใหม่ 2026-08-13) ===== */
+  /* แสดงต่อท้ายฟองข้อความบอท เมื่อคำตอบมีเอกสารอ้างอิงที่ดาวน์โหลดได้จริง (data.sources จาก
+     response_done) - ลิงก์ชี้ไปที่ backend route "/download/<token>" ที่ mask PII ก่อนส่งไฟล์
+     ให้เสมอ (ดู routes.py) ไม่แสดง section นี้เลยถ้าไม่มี sources ส่งมา (ไม่ใช่ทุกคำตอบจะมี) */
+  .sourcesBar{
+    max-width:78%;
+    margin:6px 0 16px 40px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    animation:riseIn .28s ease both;
+  }
+  .sourcesBar .sourcesLabel{
+    font-size:11px;
+    color:var(--ink-muted);
+    font-weight:600;
+    letter-spacing:0.02em;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+  .sourcesBar .sourcesLabel svg{ width:12px; height:12px; flex-shrink:0; }
+  .sourceLink{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    background:var(--paper-000);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    text-decoration:none;
+    color:var(--ink-800);
+    font-size:12.5px;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+    box-shadow:var(--shadow-sm);
+  }
+  .sourceLink:hover{ border-color:var(--gold-500); background:var(--gold-tint); transform:translateY(-1px); }
+  .sourceLink .sourceIcon{
+    width:26px; height:26px;
+    border-radius:7px;
+    background:var(--gold-tint);
+    color:var(--gold-600);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .sourceLink .sourceIcon svg{ width:13px; height:13px; }
+  .sourceLink .sourceName{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .sourceLink .downloadIcon{ width:14px; height:14px; flex-shrink:0; color:var(--ink-muted); }
+
   /* ===== Status / typing ===== */
   #statusWrap{
     padding:0 22px;
@@ -436,6 +491,7 @@
     #resetBtn{ padding:8px 10px; }
     #chatBox{ padding:16px 14px 6px; }
     .message{ max-width:86%; font-size:14px; }
+    .sourcesBar{ max-width:86%; margin-left:0; }
     #inputDock{ padding:10px 12px calc(10px + env(safe-area-inset-bottom)); }
   }
 
@@ -669,10 +725,65 @@
           // ปรับแก้ข้อ 1: ใช้ DOMPurify Sanitize HTML ก้อนเต็มก่อนนำมาอัปเดตแทนที่
           let cleanHTML = DOMPurify.sanitize(data.html);
           currentBotDiv.querySelector('.message').innerHTML = cleanHTML;
+
+          // ⚠️ เพิ่มใหม่ (2026-08-13): แสดงลิงก์ดาวน์โหลดเอกสารอ้างอิง (มาสก์ PII แล้วเสมอ - ดู
+          // routes.py ฝั่ง backend) ถ้าคำตอบรอบนี้มี data.sources ส่งมาด้วย (ไม่ใช่ทุกคำตอบจะมี
+          // เช่น คำทักทาย/ตอบไม่พบข้อมูล จะไม่มี sources เลย) ต่อท้ายฟองข้อความบอท
+          appendSourceLinks(currentBotDiv, data.sources);
       }
       status.innerHTML = '';
       chatBox.scrollTop = chatBox.scrollHeight;
   });
+
+  // ⚠️ เพิ่มใหม่ (2026-08-13): สร้างแถบลิงก์ดาวน์โหลดเอกสารอ้างอิงต่อท้ายฟองข้อความบอท
+  // ใช้ createElement + textContent ล้วน (ไม่ใช้ innerHTML ต่อสตริงเอง) กัน XSS จากชื่อไฟล์โดย
+  // อัตโนมัติ แม้ backend จะ mask PII ในชื่อไฟล์มาให้แล้วก็ตาม เป็นการป้องกันซ้อนอีกชั้น
+  // href ต่อ CONFIG.API_URL (path จาก backend เป็น relative path "/download/<token>" เสมอ
+  // ไม่รู้ว่า frontend ตอนนี้เข้าทาง local/LAN หรือผ่าน ngrok - ต้องต่อ origin ที่ถูกต้องเอง)
+  function appendSourceLinks(rowDiv, sources){
+      const existing = rowDiv.querySelector('.sourcesBar');
+      if (existing) existing.remove(); // กันซ้ำถ้า response_done ยิงมาซ้ำ (ไม่ควรเกิด แต่กันไว้)
+
+      if (!Array.isArray(sources) || sources.length === 0) return;
+
+      const bar = document.createElement('div');
+      bar.className = 'sourcesBar';
+
+      const label = document.createElement('div');
+      label.className = 'sourcesLabel';
+      label.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> แหล่งข้อมูลอ้างอิง (มาสก์ข้อมูลส่วนบุคคลแล้ว)';
+      bar.appendChild(label);
+
+      sources.forEach((src) => {
+          if (!src || !src.url) return;
+
+          const link = document.createElement('a');
+          link.className = 'sourceLink';
+          link.href = CONFIG.API_URL + src.url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.title = src.fileName || 'ดาวน์โหลดเอกสารอ้างอิง';
+
+          const icon = document.createElement('span');
+          icon.className = 'sourceIcon';
+          icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+          link.appendChild(icon);
+
+          const name = document.createElement('span');
+          name.className = 'sourceName';
+          name.textContent = src.fileName || 'เอกสารอ้างอิง'; // textContent เท่านั้น กัน XSS
+
+          const downloadIcon = document.createElement('span');
+          downloadIcon.className = 'downloadIcon';
+          downloadIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>';
+
+          link.appendChild(name);
+          link.appendChild(downloadIcon);
+          bar.appendChild(link);
+      });
+
+      rowDiv.insertAdjacentElement('afterend', bar);
+  }
 
   // จัดการ Error กรณีระบบหลังบ้านมีปัญหา
   socket.on("response_error", (data) => {
