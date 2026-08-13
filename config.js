@@ -3,7 +3,6 @@ const CONFIG = {
     // นำ URL ที่ได้จาก ngrok มาใส่ที่นี่ (เปลี่ยนใหม่ทุกครั้งที่รัน ngrok ใหม่)
     // หมายเหตุ: ใช้ https:// และไม่ต้องมีเครื่องหมาย / ต่อท้าย
     API_URL: "https://tipped-roast-tamale.ngrok-free.dev",
-             "*",
 
     // ต้องตรงกับ SARABOT_SHARED_SECRET ใน .env ฝั่งเซิร์ฟเวอร์เป๊ะ
     // ⚠️ ค่านี้อยู่ใน public repo (GitHub Pages) ใครก็ view-source เห็นได้
