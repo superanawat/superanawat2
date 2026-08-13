@@ -759,9 +759,59 @@
 
           const link = document.createElement('a');
           link.className = 'sourceLink';
-          link.href = CONFIG.API_URL + src.url;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
+          //link.href = CONFIG.API_URL + src.url;
+          //link.target = '_blank';
+          //link.rel = 'noopener noreferrer';
+
+          // แก้ไขเป็น:
+          link.href = '#';
+          link.onclick = async (e) => {
+              e.preventDefault();
+          // เปลี่ยนปุ่มเป็นสถานะกำลังโหลด (Optional)
+          const originalText = name.textContent;
+          name.textContent = 'กำลังดาวน์โหลด...';
+          link.style.pointerEvents = 'none';
+      
+          try {
+              const response = await fetch(CONFIG.API_URL + src.url, {
+                  method: 'GET',
+                  headers: {
+                      // Header สำคัญสำหรับข้ามหน้า Warning ของ ngrok
+                      "ngrok-skip-browser-warning": "true" 
+                  }
+              });
+      
+              if (!response.ok) {
+                  throw new Error('ลิงก์อาจหมดอายุหรือไม่ถูกต้อง');
+              }
+      
+              // แปลงข้อมูลที่ได้เป็น Blob
+              const blob = await response.blob();
+              
+              // สร้าง Object URL สำหรับดาวน์โหลด
+              const downloadUrl = window.URL.createObjectURL(blob);
+              const tempLink = document.createElement('a');
+              tempLink.href = downloadUrl;
+              
+              // ตั้งชื่อไฟล์ (ใช้ชื่อเดียวกับที่ Backend สร้าง หรือชื่อจาก src.fileName)
+              let dlName = src.fileName ? src.fileName.replace(/\.[^/.]+$/, "") : 'เอกสารอ้างอิง';
+              tempLink.download = `${dlName} (มาสก์ข้อมูลส่วนบุคคลแล้ว).txt`;
+              
+              document.body.appendChild(tempLink);
+              tempLink.click();
+              
+              // ทำความสะอาด
+              tempLink.remove();
+              window.URL.revokeObjectURL(downloadUrl);
+              
+          } catch (error) {
+              console.error("Download Error:", error);
+              alert("ไม่สามารถดาวน์โหลดไฟล์ได้: ลิงก์อาจหมดอายุ หรือกรุณาถามคำถามใหม่อีกครั้ง");
+          } finally {
+              name.textContent = originalText;
+              link.style.pointerEvents = 'auto';
+          }
+      };
           link.title = src.fileName || 'ดาวน์โหลดเอกสารอ้างอิง';
 
           const icon = document.createElement('span');
