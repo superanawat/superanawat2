@@ -794,8 +794,19 @@
               tempLink.href = downloadUrl;
               
               // ตั้งชื่อไฟล์ (ใช้ชื่อเดียวกับที่ Backend สร้าง หรือชื่อจาก src.fileName)
-              let dlName = src.fileName ? src.fileName.replace(/\.[^/.]+$/, "") : 'เอกสารอ้างอิง';
-              tempLink.download = `${dlName} (มาสก์ข้อมูลส่วนบุคคลแล้ว).txt`;
+              //let dlName = src.fileName ? src.fileName.replace(/\.[^/.]+$/, "") : 'เอกสารอ้างอิง';
+              //tempLink.download = `${dlName} (มาสก์ข้อมูลส่วนบุคคลแล้ว).txt`;
+              // ตรวจสอบว่าเป็นไฟล์ .docx (ฟอร์มศาลที่สร้างอัตโนมัติ) หรือไม่
+              const isDocx = src.fileName && src.fileName.toLowerCase().endsWith('.docx');
+              
+              if (isDocx) {
+                  // ถ้าเป็น .docx ให้ใช้ชื่อไฟล์เต็มจาก backend ได้เลย (ไม่ต้องเติมคำว่ามาสก์ซ้ำ และไม่ต้องเปลี่ยนเป็น txt)
+                  tempLink.download = src.fileName;
+              } else {
+                  // ถ้าเป็นไฟล์อ้างอิง .txt ปกติ ให้ใช้รูปแบบเดิม
+                  let dlName = src.fileName ? src.fileName.replace(/\.[^/.]+$/, "") : 'เอกสารอ้างอิง';
+                  tempLink.download = `${dlName} (มาสก์ข้อมูลส่วนบุคคลแล้ว).txt`;
+              }
               
               document.body.appendChild(tempLink);
               tempLink.click();
