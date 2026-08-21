@@ -828,7 +828,19 @@
 
           const icon = document.createElement('span');
           icon.className = 'sourceIcon';
-          icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+        
+          // ดึงชื่อไฟล์มาตรวจสอบ (ถ้าไม่มีให้เป็นข้อความว่าง)
+          const fileNameText = src.fileName || '';
+
+          // ใช้ .includes() เพื่อเช็คว่าชื่อไฟล์มีข้อความที่กำหนดหรือไม่ (เผื่อมีนามสกุลไฟล์ต่อท้าย)
+          if (fileNameText.includes('ร่างคำฟ้อง (กรอกพฤติการณ์แล้ว)') || fileNameText.includes('คำขอท้ายคำฟ้องอาญา (กรอกฐานความผิดแล้ว)')) {
+              // ถ้าชื่อตรง: ใช้ไอคอน "กระดาษมีปากกาเขียน"
+              icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22h6a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v10.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10.4 12.6a2 2 0 1 1 3 3L8 21l-4 1 1-4Z"/></svg>';
+          } else {
+              // ถ้าชื่อไม่ตรง: ใช้ไอคอน "กระดาษปกติ" (ค่าเริ่มต้นเดิม)
+              icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+          }
+        
           link.appendChild(icon);
 
           const name = document.createElement('span');
