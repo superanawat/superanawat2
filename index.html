@@ -184,7 +184,7 @@
   #hintStrip::-webkit-scrollbar{ height:4px; }
   #hintStrip::-webkit-scrollbar-thumb{ background:var(--gold-300); border-radius:4px; }
 
-  #hintLabel{
+  #hintLabel, .hintLabel{
     font-size:12px;
     color:var(--ink-700);
     font-weight:600;
@@ -193,7 +193,16 @@
     align-items:center;
     gap:5px;
   }
-  #hintLabel svg{ width:13px; height:13px; }
+  #hintLabel svg, .hintLabel svg{ width:13px; height:13px; }
+
+  /* ⚠️ แก้ไข (2026-08-22): separator แบ่งกลุ่ม chip ใน flex container แทน <br> เดิม */
+  .hintSeparator{
+    flex-shrink:0;
+    width:1px;
+    height:18px;
+    background:var(--line);
+    margin:0 4px;
+  }
 
   .chip{
     flex-shrink:0;
@@ -537,8 +546,10 @@
     <button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องร่วมกันนำเข้าสู่ระบบคอมพิวเตอร์ซึ่งข้อมูลคอมพิวเตอร์ปลอม</button>
     <!--<button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องทำไม้สักในเขตป่าสงวน</button>-->
     <button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องขับรถยนต์ขณะเมาสุรา</button>
-    <br>
-      <span id="hintLabel">
+    <!-- ⚠️ แก้ไข (2026-08-22): เปลี่ยน <br> (ไม่ทำงานใน flex container) เป็น separator
+         ที่แบ่งกลุ่ม chip ด้วย border ซ้าย และแก้ duplicate id="hintLabel" เป็น class แทน -->
+    <span class="hintSeparator" aria-hidden="true"></span>
+    <span class="hintLabel">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
       คำถามต่อเนื่อง:
     </span>
@@ -582,8 +593,10 @@
 
 <!-- ปรับแก้ข้อ 2: เพิ่ม integrity และ crossorigin ให้กับ CDN -->
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
-<!-- คงไฟล์ marked ไว้ตามคำสั่งเดิม หากในอนาคตมีการเรียกใช้เพิ่มเติม -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- ⚠️ แก้ไข (2026-08-22): ลบ marked.min.js ออก — Markdown parsing ทำฝั่ง backend และส่งมาเป็น
+     HTML สำเร็จแล้ว (data.html ใน response_done) ไม่มีจุดใดใน frontend เรียก marked() เลย
+     การโหลด library ที่ไม่ใช้เพิ่มน้ำหนักหน้าเว็บโดยเปล่าประโยชน์ ~25 KB (minified)
+     หากต้องการใช้ในอนาคตให้เพิ่มกลับมาพร้อม integrity hash ด้วย -->
 
 <!-- ปรับแก้ข้อ 1: เพิ่ม Library DOMPurify สำหรับทำความสะอาด HTML -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
@@ -680,12 +693,31 @@
       }, 500);
   });
 
+  // ⚠️ แก้ไข (2026-08-22): แยก bot row สร้างด้วย createElement ออกเป็น helper function
+  // เพื่อ (1) ไม่ใช้ innerHTML กับ static markup (consistent กับจุดอื่นที่ผ่าน DOMPurify)
+  // และ (2) กัน duplication ระหว่าง response_start กับ fallback ใน response_stream
+  function createBotRow() {
+      const row = document.createElement('div');
+      row.className = 'row bot';
+
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      // SVG นี้เป็น hardcoded static markup ล้วนๆ ไม่มี user input ปนเลย
+      // ใช้ innerHTML ได้อย่างปลอดภัย (ไม่ต่างกับใส่ตรงๆ ใน HTML)
+      avatar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg>';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'message bot';
+
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      return row;
+  }
+
   // เริ่ม stream (AI กำลังเริ่มพิมพ์)
   socket.on("response_start", () => {
-    if (ignoreStream) return;
-      currentBotDiv = document.createElement('div');
-      currentBotDiv.className = 'row bot';
-      currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
+      if (ignoreStream) return;
+      currentBotDiv = createBotRow();
       chatBox.appendChild(currentBotDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
   });
@@ -694,9 +726,7 @@
   socket.on("response_stream", (data) => {
       if (ignoreStream) return;
       if (!currentBotDiv) {
-          currentBotDiv = document.createElement('div');
-          currentBotDiv.className = 'row bot';
-          currentBotDiv.innerHTML = '<div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6Zm14 0l-3 6a3 3 0 0 0 6 0l-3-6Z"/><path d="M5 7h14M4 21h16"/></svg></div><div class="message bot"></div>';
+          currentBotDiv = createBotRow();
           chatBox.appendChild(currentBotDiv);
       }
       
@@ -764,71 +794,12 @@
           //link.target = '_blank';
           //link.rel = 'noopener noreferrer';
 
-          // แก้ไขเป็น:
           link.href = '#';
-          link.onclick = async (e) => {
-              e.preventDefault();
-          // เปลี่ยนปุ่มเป็นสถานะกำลังโหลด (Optional)
-          const originalText = name.textContent;
-          name.textContent = 'กำลังดาวน์โหลด...';
-          link.style.pointerEvents = 'none';
-      
-          try {
-              const response = await fetch(CONFIG.API_URL + src.url, {
-                  method: 'GET',
-                  headers: {
-                      // Header สำคัญสำหรับข้ามหน้า Warning ของ ngrok
-                      "ngrok-skip-browser-warning": "true" 
-                  }
-              });
-      
-              if (!response.ok) {
-                  throw new Error('ลิงก์อาจหมดอายุหรือไม่ถูกต้อง');
-              }
-      
-              // แปลงข้อมูลที่ได้เป็น Blob
-              const blob = await response.blob();
-              
-              // สร้าง Object URL สำหรับดาวน์โหลด
-              const downloadUrl = window.URL.createObjectURL(blob);
-              const tempLink = document.createElement('a');
-              tempLink.href = downloadUrl;
-              
-              // ตั้งชื่อไฟล์ (ใช้ชื่อเดียวกับที่ Backend สร้าง หรือชื่อจาก src.fileName)
-              //let dlName = src.fileName ? src.fileName.replace(/\.[^/.]+$/, "") : 'เอกสารอ้างอิง';
-              //tempLink.download = `${dlName} (มาสก์ข้อมูลส่วนบุคคลแล้ว).txt`;
-              // ตรวจสอบว่าเป็นไฟล์ .docx (ฟอร์มศาลที่สร้างอัตโนมัติ) หรือไม่
-              const isDocx = src.fileName && src.fileName.toLowerCase().endsWith('.docx');
-              
-              if (isDocx) {
-                  // ถ้าเป็น .docx ให้ใช้ชื่อไฟล์เต็มจาก backend ได้เลย (ไม่ต้องเติมคำว่ามาสก์ซ้ำ และไม่ต้องเปลี่ยนเป็น txt)
-                  tempLink.download = src.fileName;
-              } else {
-                  // ถ้าเป็นไฟล์อ้างอิง .txt ปกติ ให้ใช้รูปแบบเดิม
-                  let dlName = src.fileName ? src.fileName.replace(/\.[^/.]+$/, "") : 'เอกสารอ้างอิง';
-                  tempLink.download = `${dlName} (มาสก์ข้อมูลส่วนบุคคลแล้ว).txt`;
-              }
-              
-              document.body.appendChild(tempLink);
-              tempLink.click();
-              
-              // ทำความสะอาด
-              tempLink.remove();
-              window.URL.revokeObjectURL(downloadUrl);
-              
-          } catch (error) {
-              console.error("Download Error:", error);
-              alert("ไม่สามารถดาวน์โหลดไฟล์ได้: ลิงก์อาจหมดอายุ หรือกรุณาถามคำถามใหม่อีกครั้ง");
-          } finally {
-              name.textContent = originalText;
-              link.style.pointerEvents = 'auto';
-          }
-      };
           link.title = src.fileName || 'ดาวน์โหลดเอกสารอ้างอิง';
 
           const icon = document.createElement('span');
           icon.className = 'sourceIcon';
-        
+
           // ดึงชื่อไฟล์มาตรวจสอบ (ถ้าไม่มีให้เป็นข้อความว่าง)
           const fileNameText = src.fileName || '';
 
@@ -840,9 +811,12 @@
               // ถ้าชื่อไม่ตรง: ใช้ไอคอน "กระดาษปกติ" (ค่าเริ่มต้นเดิม)
               icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
           }
-        
-          link.appendChild(icon);
 
+          // ⚠️ แก้ไข (2026-08-22): ย้าย const name มาประกาศก่อน link.onclick เพื่อแก้ปัญหา
+          // const ไม่มี hoisting — การใช้ name.textContent ใน onclick handler ในเวอร์ชันเดิมนั้น
+          // ปลอดภัยได้เพราะ onclick ถูก invoke หลัง forEach loop ทำงานเสร็จ (ตอนนั้น const name
+          // ถูก assign แล้ว) แต่เพื่อความชัดเจนและกัน edge case ที่อาจเกิดในอนาคต จึงย้ายมาไว้
+          // ก่อน onclick ให้ลำดับโค้ดตรงกับลำดับการ assign จริงๆ
           const name = document.createElement('span');
           name.className = 'sourceName';
           name.textContent = src.fileName || 'เอกสารอ้างอิง'; // textContent เท่านั้น กัน XSS
@@ -851,6 +825,64 @@
           downloadIcon.className = 'downloadIcon';
           downloadIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>';
 
+          // onclick ประกาศหลัง name เพื่อให้แน่ใจว่า name ถูก assign แล้วก่อนเสมอ
+          link.onclick = async (e) => {
+              e.preventDefault();
+              // เปลี่ยนปุ่มเป็นสถานะกำลังโหลด
+              const originalText = name.textContent;
+              name.textContent = 'กำลังดาวน์โหลด...';
+              link.style.pointerEvents = 'none';
+
+              try {
+                  const response = await fetch(CONFIG.API_URL + src.url, {
+                      method: 'GET',
+                      headers: {
+                          // Header สำคัญสำหรับข้ามหน้า Warning ของ ngrok
+                          "ngrok-skip-browser-warning": "true"
+                      }
+                  });
+
+                  if (!response.ok) {
+                      throw new Error('ลิงก์อาจหมดอายุหรือไม่ถูกต้อง');
+                  }
+
+                  // แปลงข้อมูลที่ได้เป็น Blob
+                  const blob = await response.blob();
+
+                  // สร้าง Object URL สำหรับดาวน์โหลด
+                  const downloadUrl = window.URL.createObjectURL(blob);
+                  const tempLink = document.createElement('a');
+                  tempLink.href = downloadUrl;
+
+                  // ตรวจสอบว่าเป็นไฟล์ .docx (ฟอร์มศาลที่สร้างอัตโนมัติ) หรือไม่
+                  const isDocx = src.fileName && src.fileName.toLowerCase().endsWith('.docx');
+
+                  if (isDocx) {
+                      // ถ้าเป็น .docx ให้ใช้ชื่อไฟล์เต็มจาก backend ได้เลย (ไม่ต้องเติมคำว่ามาสก์ซ้ำ และไม่ต้องเปลี่ยนเป็น txt)
+                      tempLink.download = src.fileName;
+                  } else {
+                      // ถ้าเป็นไฟล์อ้างอิง .txt ปกติ ให้ใช้รูปแบบเดิม
+                      let dlName = src.fileName ? src.fileName.replace(/\.[^/.]+$/, "") : 'เอกสารอ้างอิง';
+                      tempLink.download = `${dlName} (มาสก์ข้อมูลส่วนบุคคลแล้ว).txt`;
+                  }
+
+                  document.body.appendChild(tempLink);
+                  tempLink.click();
+
+                  // ทำความสะอาด
+                  tempLink.remove();
+                  window.URL.revokeObjectURL(downloadUrl);
+
+              } catch (error) {
+                  console.error("Download Error:", error);
+                  alert("ไม่สามารถดาวน์โหลดไฟล์ได้: ลิงก์อาจหมดอายุ หรือกรุณาถามคำถามใหม่อีกครั้ง");
+              } finally {
+                  name.textContent = originalText;
+                  link.style.pointerEvents = 'auto';
+              }
+          };
+
+          link.appendChild(icon);
           link.appendChild(name);
           link.appendChild(downloadIcon);
           bar.appendChild(link);
