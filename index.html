@@ -542,12 +542,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
       ลองถาม:
     </span>
-    <!--<button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องร่วมกันพาอาวุธมีดปลายแหลม</button>-->
-    <button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องร่วมกันทำร้ายร่างกาย บาดเจ็บสาหัส เจตนาฆ่า</button>
-    <!--<button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องทำไม้สักในเขตป่าสงวน</button>-->
-    <button class="chip" onclick="useHint(this)">ข้อมูลร่างคำฟ้องขับรถยนต์ขณะเมาสุรา</button>
-    <!-- ⚠️ แก้ไข (2026-08-22): เปลี่ยน <br> (ไม่ทำงานใน flex container) เป็น separator
-         ที่แบ่งกลุ่ม chip ด้วย border ซ้าย และแก้ duplicate id="hintLabel" เป็น class แทน -->
+    
+<!-- จุดสำหรับแสดงคำถามที่ถูกสุ่ม -->
+    <span id="dynamicHints" style="display: contents;"></span>
+    
     <span class="hintSeparator" aria-hidden="true"></span>
     <span class="hintLabel">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
@@ -622,6 +620,38 @@
   }
   const CLIENT_ID = getClientId();
 
+
+// คลังคำถามทั้งหมด (สามารถเพิ่มคำถามอื่นๆ ลงใน Array นี้ได้ในอนาคต)
+  const hintPool = [
+      "ข้อมูลร่างคำฟ้องร่วมกันทำร้ายร่างกาย บาดเจ็บสาหัส เจตนาฆ่า",
+      "ข้อมูลร่างคำฟ้องลักลอบเดินทางมาจากประเทศกัมพูชา",
+      "ข้อมูลร่างคำฟ้องทำไม้สักในเขตป่าสงวนแห่งชาติ",
+      "ข้อมูลร่างคำฟ้องขับรถยนต์ขณะเมาสุรา"
+  ];
+
+  // ฟังก์ชันสุ่มและแสดงผลคำถาม 2 ข้อ
+  function randomizeHints() {
+      const container = document.getElementById('dynamicHints');
+      if (!container) return;
+
+      // สุ่มลำดับข้อมูลใน Array และตัดมาแค่ 2 อันดับแรก
+      const shuffled = [...hintPool].sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, 2);
+
+      // สร้างปุ่ม (Chip) ใหม่ใส่ลงในคอนเทนเนอร์
+      container.innerHTML = '';
+      selected.forEach(hint => {
+          const btn = document.createElement('button');
+          btn.className = 'chip';
+          btn.textContent = hint;
+          btn.onclick = function() { useHint(this); };
+          container.appendChild(btn);
+      });
+  }
+
+  // ให้สุ่มคำถามทันทีที่โหลดหน้าเว็บเสร็จ
+  document.addEventListener('DOMContentLoaded', randomizeHints);
+  
 // ดึง URL จาก config.js โดยตรง แนะนำให้ใช้ websocket เพื่อประสิทธิภาพที่ดี
   const socket = io(CONFIG.API_URL, {
       transports: ["websocket", "polling"],
@@ -674,14 +704,17 @@
   // เคลียร์หน้าจอแชท
   function resetChat() {
       if (confirm("คุณต้องการล้างประวัติการสนทนาทั้งหมดบนหน้าจอใช่หรือไม่?")) {
-          chatBox.innerHTML = ''; // ล้างข้อความทั้งหมดในกล่องแชท
-          status.innerHTML = '';  // ล้างสถานะการทำงาน
-          document.getElementById('userInput').value = ''; // ล้างช่องพิมพ์คำถาม
-          currentBotDiv = null;   // รีเซ็ตตัวแปรเก็บข้อความบอท
-          ignoreStream = true; // ยกธงดักข้อความผีดิบทันทีที่กดตกลง
+          chatBox.innerHTML = ''; 
+          status.innerHTML = '';  
+          document.getElementById('userInput').value = ''; 
+          currentBotDiv = null;   
+          ignoreStream = true; 
           socket.emit("reset_chat", { client_id: CLIENT_ID });
+          
+          // สุ่มคำถามแนะนำใหม่
+          randomizeHints();
       }
-  }
+    }
 
   // เมื่อ Backend ลบ Redis ของ client_id นี้เสร็จแล้ว
   socket.on("chat_reset_success", () => {
